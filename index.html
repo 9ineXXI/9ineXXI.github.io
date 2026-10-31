@@ -1,0 +1,1196 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>星核 StarCore</title>
+<meta name="description" content="星核 STAR CORE：AI 生成画面，代码写出动效，钴蓝色的宇宙视觉作品。">
+<meta name="theme-color" content="#03040a">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="星核 StarCore">
+<meta property="og:title" content="星核 StarCore">
+<meta property="og:description" content="AI 生成画面，代码写出动效。收集被黑夜吞没的光，把它们做成一颗星。">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://9inexxi.github.io/">
+<meta property="og:url" content="https://9inexxi.github.io/">
+<meta property="og:image" content="https://9inexxi.github.io/og.jpg">
+<meta name="twitter:image" content="https://9inexxi.github.io/og.jpg">
+<link rel="preload" href="fonts/noto-serif-sc-600.woff" as="font" type="font/woff" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- the three small Latin display faces load without blocking; where Google Fonts is unreachable the page falls back to system fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Share+Tech+Mono&family=Silkscreen&display=swap" media="print" onload="this.media='all'">
+<style>
+@font-face { font-family: "Noto Serif SC"; font-style: normal; font-weight: 300; font-display: swap; src: url("fonts/noto-serif-sc-300.woff") format("woff"); }
+@font-face { font-family: "Noto Serif SC"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/noto-serif-sc-600.woff") format("woff"); }
+@font-face { font-family: "Noto Sans SC"; font-style: normal; font-weight: 300; font-display: swap; src: url("fonts/noto-sans-sc-300.woff") format("woff"); }
+@font-face { font-family: "Noto Sans SC"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/noto-sans-sc-400.woff") format("woff"); }
+</style>
+<style>
+/* Layout: a blueprint frame. A centred 1200px column with hairline side rails runs the whole page; each band is split into cells by hairlines;
+   hatched strips with + marks separate the numbered sections. The hero pairs the name and a typed line with a live viewer, where a
+   code-rendered LED layer is dragged across the AI original. */
+:root {
+  --void: #03040a;
+  --deep: #060a1d;
+  --ink: #e2eeff;
+  --mist: #8ea6da;
+  --dim: #4d5d92;
+  --cobalt: #1f3cff;
+  --royal: #0c23b3;
+  --glow: #8fcff5;
+  --line: rgba(64, 104, 255, .30);
+  --rule: rgba(64, 104, 255, .2);
+  --line-strong: rgba(120, 170, 255, .62);
+  --ember: #ff9248;
+  --f-cn-display: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --f-lat-display: "Cinzel", "Trajan Pro", "Times New Roman", serif;
+  --f-pixel: "Silkscreen", "Share Tech Mono", "Courier New", monospace;
+  --f-body: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
+  --f-mono: "Share Tech Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --s0: 15px;
+  --pad: clamp(20px, 3.4vw, 48px);
+  --plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11'%3E%3Cpath d='M5.5 0v11M0 5.5h11' stroke='%2398bcff' stroke-opacity='.8'/%3E%3C/svg%3E");
+  color-scheme: dark;
+}
+html { background: var(--void); scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  /* background texture: two faint nebula glows (fixed), blue film grain, a 96px star-chart grid with + marks, a 6px halftone dot matrix, faint scanlines */
+  margin: 0;
+  background-color: var(--void);
+  background-image:
+    radial-gradient(70vw 48vw at 88% 6%, rgba(31, 60, 255, .14), transparent 70%),
+    radial-gradient(56vw 56vw at 4% 64%, rgba(12, 35, 179, .13), transparent 72%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55  0 0 0 0 .7  0 0 0 0 1  0 0 0 1.2 -.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cpath d='M0 .5H96M.5 0V96' stroke='%234068ff' stroke-opacity='.035' fill='none'/%3E%3Cpath d='M0 .5h4M92 .5h4M.5 0v4M.5 92v4' stroke='%2390c0ff' stroke-opacity='.2' fill='none'/%3E%3C/svg%3E"),
+    radial-gradient(circle at 1px 1px, rgba(130, 170, 255, .09) 1px, transparent 1.4px),
+    repeating-linear-gradient(0deg, rgba(120, 160, 255, .022) 0 1px, transparent 1px 4px);
+  background-size: auto, auto, 180px 180px, 96px 96px, 6px 6px, auto;
+  background-attachment: fixed, fixed, scroll, scroll, scroll, scroll;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-weight: 300;
+  font-size: var(--s0);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--void); }
+a { color: inherit; }
+:focus-visible { outline: 1px solid var(--glow); outline-offset: 3px; }
+section { scroll-margin-top: 64px; }
+
+/* ── frame: full-width rows, a centred column with side rails ── */
+.row { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { position: relative; max-width: 1200px; margin: 0 auto; border-inline: 1px solid var(--line); }
+.r + .r { border-top: 1px solid var(--rule); }
+
+/* hatched strip between sections, + marks where its edges cross the rails */
+.hatch { border-block: 1px solid var(--line); }
+.hatch .wrap { height: clamp(30px, 4.2vw, 52px); background: repeating-linear-gradient(135deg, rgba(110, 150, 255, .15) 0 1px, transparent 1px 9px); }
+.hatch .wrap::before, .hatch .wrap::after { content: ""; position: absolute; left: -6px; right: -6px; height: 11px; pointer-events: none;
+  background: var(--plus) left center / 11px 11px no-repeat, var(--plus) right center / 11px 11px no-repeat; }
+.hatch .wrap::before { top: -6px; }
+.hatch .wrap::after { bottom: -6px; }
+
+/* ── top bar ── */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: rgba(3, 4, 10, .84); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.bar .wrap { display: flex; align-items: stretch; min-height: 56px; }
+.brand { display: flex; align-items: center; gap: 10px; padding: 0 20px; border-right: 1px solid var(--rule); text-decoration: none; white-space: nowrap; }
+.spark { width: 14px; height: 14px; position: relative; flex: none; }
+.spark::before, .spark::after { content: ""; position: absolute; left: 50%; top: 50%; background: var(--glow); transform: translate(-50%, -50%); border-radius: 1px; box-shadow: 0 0 8px var(--cobalt); }
+.spark::before { width: 14px; height: 1.5px; }
+.spark::after { width: 1.5px; height: 14px; }
+.brand b { font-family: var(--f-cn-display); font-weight: 600; font-size: 16px; letter-spacing: .24em; }
+.brand .sl { font-family: var(--f-mono); color: var(--dim); }
+.brand .px { font-family: var(--f-pixel); font-size: 10px; letter-spacing: .24em; color: var(--mist); }
+.kbd { font-family: var(--f-mono); font-size: 10px; line-height: 1.4; letter-spacing: .16em; color: var(--glow); border: 1px solid var(--line-strong); padding: 2px 6px 1px; }
+.nav { display: flex; }
+.nav a { display: flex; align-items: center; gap: 8px; padding: 0 clamp(14px, 1.8vw, 24px); border-right: 1px solid var(--rule); text-decoration: none; color: var(--mist); font-size: 13.5px; letter-spacing: .16em; white-space: nowrap; transition: color .2s, background .2s; }
+.nav a em { font-style: normal; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; color: var(--dim); }
+.nav a:hover { color: var(--ink); background: rgba(31, 60, 255, .08); }
+.bar-cta { margin-left: auto; display: flex; align-items: center; gap: 8px; padding: 0 12px; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; gap: 10px; font: inherit; font-family: var(--f-body); font-weight: 400; font-size: 14px; line-height: 1.2; letter-spacing: .14em; text-decoration: none; white-space: nowrap;
+  color: var(--ink); padding: 13px 20px; border: 1px solid var(--line-strong); background: rgba(3, 4, 10, .4); cursor: pointer; transition: background .2s, border-color .2s, box-shadow .25s; }
+.btn .ar { font-family: var(--f-mono); letter-spacing: 0; }
+.btn:hover { border-color: var(--glow); background: rgba(31, 60, 255, .16); }
+.btn.fill { color: #04081a; background: var(--ink); border-color: var(--ink); }
+.btn.fill:hover { background: #fff; box-shadow: 0 0 26px rgba(31, 60, 255, .6); }
+.btn.sm { padding: 8px 13px; font-size: 12.5px; gap: 8px; }
+
+/* ── hero: meta strips / copy + viewer / features + chips ── */
+.hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "ml mr" "cp vw" "ft ch"; }
+.ml { grid-area: ml; } .mr { grid-area: mr; } .cp { grid-area: cp; } .vw { grid-area: vw; } .ft { grid-area: ft; } .ch { grid-area: ch; }
+.mr, .vw, .ch { border-left: 1px solid var(--rule); }
+.ml, .mr, .cp, .vw { border-bottom: 1px solid var(--rule); }
+.strip { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 12px 20px; font-family: var(--f-mono); font-size: 10.5px; line-height: 1.5; letter-spacing: .2em; color: var(--mist); text-transform: uppercase; white-space: nowrap; }
+.strip .t { overflow: hidden; text-overflow: ellipsis; }
+.mr { justify-content: space-between; }
+.mr b { font-weight: 400; color: var(--ink); }
+.sq { width: 6px; height: 6px; flex: none; background: var(--glow); box-shadow: 0 0 8px var(--cobalt); }
+.live { display: inline-flex; align-items: center; gap: 8px; flex: none; color: var(--glow); }
+.live i { width: 6px; height: 6px; background: var(--glow); box-shadow: 0 0 8px var(--cobalt); animation: blink 1.6s steps(2, jump-none) infinite; }
+@keyframes blink { 50% { opacity: .2; } }
+
+.cp { display: grid; align-content: center; gap: 24px; padding: clamp(40px, 5.6vw, 76px) var(--pad); min-width: 0; }
+.title { margin: 0; display: flex; align-items: flex-start; gap: clamp(10px, 1.4vw, 18px); }
+.title .cn { font-family: var(--f-cn-display); font-weight: 600; font-size: clamp(64px, 8.4vw, 118px); line-height: 1; letter-spacing: .08em; color: var(--ink);
+  text-shadow: 0 0 2px #fff, 0 0 22px rgba(31, 60, 255, .9), 0 0 60px rgba(31, 60, 255, .5); }
+.title .en { font-family: var(--f-pixel); font-weight: 400; font-size: clamp(10px, 1vw, 13px); line-height: 1.7; letter-spacing: .3em; color: var(--glow); text-shadow: 0 0 10px rgba(31, 60, 255, .9); margin-top: .5em; }
+.typed { margin: -8px 0 0; font-family: var(--f-cn-display); font-weight: 300; font-size: clamp(26px, 3vw, 42px); line-height: 1.3; letter-spacing: .1em; color: var(--glow);
+  text-shadow: 0 0 18px rgba(31, 60, 255, .85); min-height: 1.3em; white-space: nowrap; transition: color .4s; }
+.typed.ember { color: #ffc08f; text-shadow: 0 0 18px rgba(255, 110, 30, .6); }
+.typed::after { content: ""; display: inline-block; width: 3px; height: .92em; margin-left: .14em; vertical-align: -.1em; background: currentColor; box-shadow: 0 0 10px var(--cobalt); animation: blink 1.05s steps(2, jump-none) infinite; }
+.lede { margin: 0; max-width: 27em; color: var(--mist); text-wrap: pretty; }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.vw { position: relative; min-height: clamp(380px, 40vw, 560px); overflow: hidden; background: #03040a; touch-action: pan-y; cursor: ew-resize; -webkit-user-select: none; user-select: none; }
+#view { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.vlab { position: absolute; z-index: 2; top: 12px; font-family: var(--f-mono); font-size: 10px; line-height: 1.4; letter-spacing: .2em; padding: 4px 8px 3px; color: var(--ink); background: rgba(3, 4, 10, .74); border: 1px solid var(--line-strong); pointer-events: none; }
+.vlab.l { left: 12px; }
+.vlab.r { right: 12px; }
+.knob { position: absolute; z-index: 3; top: 50%; left: 62%; width: 28px; height: 28px; margin: -14px 0 0 -14px; box-sizing: border-box; display: grid; place-items: center;
+  color: var(--ink); background: #03040a; border: 1px solid var(--ink); box-shadow: 0 0 16px rgba(31, 60, 255, .7); cursor: ew-resize; touch-action: none; }
+.knob svg { width: 14px; height: 9px; }
+.vopen { position: absolute; z-index: 3; right: 12px; bottom: 12px; font-family: var(--f-mono); font-size: 10.5px; line-height: 1.4; letter-spacing: .2em; padding: 6px 10px 5px;
+  color: var(--ink); background: rgba(3, 4, 10, .8); border: 1px solid var(--line-strong); cursor: pointer; }
+.vopen:hover { border-color: var(--glow); background: rgba(31, 60, 255, .3); }
+.mi { position: absolute; z-index: 2; left: 14px; bottom: 17px; width: 46px; height: 12px; color: var(--glow); opacity: .7; pointer-events: none; }
+
+.ft { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ft span { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 14px 18px; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .18em; color: var(--mist); white-space: nowrap; }
+.ft span + span { border-left: 1px solid var(--rule); }
+.ch { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 10px 16px; }
+.chip { font: inherit; font-family: var(--f-body); font-weight: 400; font-size: 12.5px; line-height: 1.3; letter-spacing: .14em; padding: 6px 11px; color: var(--mist); background: transparent; border: 1px solid var(--line); cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
+.chip:hover { color: var(--ink); border-color: var(--line-strong); }
+.chip[aria-pressed="true"] { color: #04081a; background: var(--ink); border-color: var(--ink); }
+
+/* ── section heads: number + headline | intro ── */
+.head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.head > div { padding: clamp(44px, 5.4vw, 72px) var(--pad) clamp(34px, 4vw, 52px); min-width: 0; }
+.head > div + div { border-left: 1px solid var(--rule); display: flex; align-items: flex-end; }
+.head p { margin: 0; max-width: 30em; color: var(--mist); text-wrap: pretty; }
+.eyebrow { margin: 0; display: flex; align-items: baseline; gap: 12px; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .28em; }
+.eyebrow .n { color: var(--glow); }
+.eyebrow .k { color: var(--ink); }
+.eyebrow .e { color: var(--dim); }
+.h2 { margin: 22px 0 0; font-family: var(--f-cn-display); font-weight: 300; font-size: clamp(32px, 4.3vw, 56px); line-height: 1.3; letter-spacing: .05em; color: var(--ink); text-wrap: balance; }
+
+/* ── works: three-column wall ── */
+.lib { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); align-items: start; padding: clamp(14px, 2vw, 24px); }
+.lib .col { display: grid; gap: clamp(12px, 1.6vw, 20px); min-width: 0; }
+.work { margin: 0; min-width: 0; border: 1px solid var(--rule); background: rgba(6, 10, 29, .5); }
+.shot { position: relative; display: block; width: 100%; padding: 0; border: 0; background: var(--deep); cursor: pointer; overflow: hidden; color: inherit; }
+.shot img, .shot video { display: block; width: 100%; height: auto; max-width: 100%; transition: transform .6s cubic-bezier(.2, .7, .2, 1), filter .3s; }
+.shot video { position: absolute; inset: 0; height: 100%; object-fit: cover; opacity: 0; transition: opacity .35s; }
+.shot.playing video { opacity: 1; }
+.shot::before, .shot::after { content: ""; position: absolute; width: 16px; height: 16px; border: 1px solid var(--glow); z-index: 2; opacity: 0; transition: opacity .2s; }
+.shot::before { top: 8px; right: 8px; border-width: 1px 1px 0 0; }
+.shot::after { bottom: 8px; left: 8px; border-width: 0 0 1px 1px; }
+.shot:hover::before, .shot:focus-visible::before, .shot:hover::after, .shot:focus-visible::after { opacity: .9; }
+.shot:hover img { transform: scale(1.025); filter: saturate(1.12) brightness(1.06); }
+.shot .scan { position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(3, 4, 10, .18) 0 1px, transparent 1px 3px); opacity: 0; transition: opacity .3s; z-index: 1; }
+.shot:hover .scan { opacity: 1; }
+.cap-bar { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 10px 12px 6px; border-top: 1px solid var(--rule); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .18em; color: var(--dim); }
+.cap-bar .k { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; min-width: 0; color: var(--ink); }
+.cap-bar .no { color: var(--glow); }
+.cap-bar .lat { font-family: var(--f-lat-display); font-size: 13px; letter-spacing: .18em; }
+.cap-bar .cn { font-family: var(--f-cn-display); font-weight: 600; font-size: 13px; letter-spacing: .2em; color: var(--mist); }
+.cap-bar .d { flex: none; }
+.cap-bar .d b { font-weight: 400; color: var(--glow); }
+.cap-line { margin: 0; padding: 0 12px 14px; font-size: 13.5px; line-height: 1.75; color: var(--mist); text-wrap: pretty; }
+.work.ember .no, .work.ember .cap-bar .d b { color: var(--ember); }
+.lib-more { margin: 0; padding: 14px var(--pad); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .22em; color: var(--dim); text-wrap: balance; }
+.lib-more b { font-weight: 400; color: var(--glow); }
+.lib-more a { color: var(--glow); text-decoration: none; white-space: nowrap; }
+.lib-more a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ── process: three steps ── */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.step { display: grid; align-content: start; gap: 12px; padding: 30px var(--pad) 44px; min-width: 0; }
+.step + .step { border-left: 1px solid var(--rule); }
+.badge { width: 34px; height: 34px; box-sizing: border-box; display: grid; place-items: center; border: 1px solid var(--line-strong); font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .08em; color: var(--glow); }
+.step h3 { margin: 16px 0 0; font-family: var(--f-cn-display); font-weight: 600; font-size: 21px; line-height: 1.4; letter-spacing: .16em; }
+.step p { margin: 0; color: var(--mist); text-wrap: pretty; }
+
+/* ── manifesto + spec sheet ── */
+.mani { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); }
+.mani-body { display: grid; align-content: start; gap: 18px; padding: clamp(32px, 4vw, 52px) var(--pad); min-width: 0; }
+.mani-body p { margin: 0; max-width: 33em; color: var(--mist); text-wrap: pretty; }
+.sign { font-family: var(--f-cn-display); color: var(--ink) !important; letter-spacing: .14em; }
+.sign span { display: block; margin-top: 6px; font-family: var(--f-mono); font-size: 12px; letter-spacing: .24em; color: var(--dim); }
+.spec-cell { border-left: 1px solid var(--rule); padding: clamp(20px, 3vw, 40px); min-width: 0; }
+.spec { border: 1px solid var(--rule); background: rgba(6, 10, 29, .62); }
+.spec-h { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .24em; color: var(--mist); }
+.spec dl { margin: 0; }
+.spec dl div { display: grid; grid-template-columns: 4.4em minmax(0, 1fr); gap: 12px; padding: 12px 14px; }
+.spec dl div + div { border-top: 1px solid rgba(64, 104, 255, .13); }
+.spec dt { font-family: var(--f-mono); font-size: 11px; letter-spacing: .22em; color: var(--dim); padding-top: 3px; }
+.spec dd { margin: 0; min-width: 0; color: var(--ink); overflow-wrap: anywhere; }
+.spec dd small { display: block; font-family: var(--f-mono); font-size: 11px; letter-spacing: .14em; color: var(--mist); }
+.sw { display: inline-flex; gap: 5px; margin-right: 10px; vertical-align: -2px; }
+.sw i { width: 14px; height: 14px; box-sizing: border-box; border: 1px solid var(--line-strong); }
+
+/* ── call band over a field of signal glyphs ── */
+.call { position: relative; overflow: hidden; display: grid; place-items: center; min-height: clamp(380px, 38vw, 480px); text-align: center; }
+#field { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.call-in { position: relative; z-index: 1; display: grid; justify-items: center; gap: 18px; padding: 64px var(--pad); }
+.call .h2 { margin: 4px 0 0; }
+.call p { margin: 0; color: var(--mist); }
+.call .note { font-size: 13.5px; color: var(--dim); }
+/* channel cards: line icons drawn for this site (not the platforms' logos), the whole card links to that platform's search */
+.chans { list-style: none; margin: 10px 0 2px; padding: 0; width: min(100%, 940px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.chans li { display: flex; min-width: 0; }
+.chan { font: inherit; width: 100%; box-sizing: border-box; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "ic pf" "ic id" "go go"; column-gap: 12px; row-gap: 2px; align-items: center;
+  padding: 14px 14px 12px; text-align: left; text-decoration: none; color: var(--ink); background: rgba(3, 4, 10, .84); border: 1px solid var(--line); cursor: pointer; transition: border-color .2s, background .2s, box-shadow .25s; }
+.chan:hover, .chan:focus-visible { border-color: var(--glow); background: rgba(9, 16, 52, .9); box-shadow: 0 0 24px rgba(31, 60, 255, .35); }
+.cico { grid-area: ic; width: 40px; height: 40px; box-sizing: border-box; display: grid; place-items: center; border: 1px solid var(--line-strong); color: var(--glow); transition: box-shadow .25s; }
+.chan:hover .cico { box-shadow: 0 0 14px rgba(31, 60, 255, .6), inset 0 0 10px rgba(31, 60, 255, .35); }
+.ico { width: 20px; height: 20px; display: block; flex: none; fill: none; stroke: currentColor; stroke-width: 1.3; }
+.pf { grid-area: pf; font-size: 12px; line-height: 1.5; letter-spacing: .2em; color: var(--mist); }
+.cid { grid-area: id; min-width: 0; font-weight: 400; font-size: 15.5px; line-height: 1.5; letter-spacing: .03em; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chan:hover .cid { text-decoration: underline; text-decoration-color: var(--glow); text-underline-offset: 4px; }
+.go { grid-area: go; display: flex; justify-content: space-between; gap: 8px; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--rule); font-family: var(--f-mono); font-size: 10.5px; line-height: 1.4; letter-spacing: .16em; color: var(--dim); }
+.chan:hover .go { color: var(--glow); }
+.toast { position: fixed; z-index: 40; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); max-width: calc(100vw - 32px); box-sizing: border-box; transform: translate(-50%, 16px); opacity: 0; pointer-events: none;
+  padding: 10px 16px; font-size: 13.5px; line-height: 1.6; color: var(--ink); background: rgba(3, 4, 10, .94); border: 1px solid var(--line-strong); box-shadow: 0 0 24px rgba(31, 60, 255, .4); transition: opacity .25s, transform .25s; }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+/* ── footer ── */
+.foot { border-bottom: 1px solid var(--line); }
+.fcols { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); }
+.fcols > div { padding: 36px var(--pad) 40px; min-width: 0; }
+.fcols > div + div { border-left: 1px solid var(--rule); }
+.fcols .brand { padding: 0; border: 0; margin-bottom: 14px; }
+.fdesc { margin: 0; max-width: 24em; font-size: 13.5px; color: var(--mist); text-wrap: pretty; }
+.fh { margin: 0 0 14px; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .3em; color: var(--dim); }
+.flist { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; font-size: 13.5px; }
+.flist a { text-decoration: none; color: var(--ink); }
+.flist a:hover { color: var(--glow); }
+.flist em { font-style: normal; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .1em; color: var(--dim); margin-right: 10px; }
+.flist .m { color: var(--mist); }
+.flist a, .flink { display: inline-flex; align-items: center; gap: 9px; }
+.flink { font: inherit; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+.flink:hover { color: var(--glow); }
+.flist .ico { width: 15px; height: 15px; color: var(--glow); }
+.fbot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px 20px; padding: 14px var(--pad); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .22em; color: var(--dim); }
+.fbot .bits { font-size: 10px; letter-spacing: .26em; overflow-wrap: anywhere; }
+.phases { display: flex; align-items: center; gap: 10px; }
+.phases i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+.phases .l1 { box-shadow: inset 2px 0 0 0 var(--glow); }
+.phases .l2 { box-shadow: inset 3px 0 0 0 var(--glow); }
+.phases .l3 { box-shadow: inset 5px 0 0 0 var(--glow); }
+.phases .f { width: 12px; height: 12px; background: var(--glow); box-shadow: 0 0 9px rgba(31, 60, 255, .95); }
+.phases .r3 { box-shadow: inset -5px 0 0 0 var(--glow); }
+.phases .r2 { box-shadow: inset -3px 0 0 0 var(--glow); }
+.phases .r1 { box-shadow: inset -2px 0 0 0 var(--glow); }
+
+/* ── pixel terrain: isometric voxels, stairs up to a gate ── */
+.terrain { position: relative; height: clamp(250px, 30vw, 400px); }
+#terrain { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.terrain-hud { position: absolute; left: max(18px, calc(env(safe-area-inset-left, 0px) + 12px)); right: max(18px, calc(env(safe-area-inset-right, 0px) + 12px));
+  top: 12px; display: flex; justify-content: space-between; align-items: start; gap: 12px; pointer-events: none;
+  font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .22em; color: var(--mist); text-shadow: 0 0 6px var(--void), 0 0 2px var(--void); }
+.terrain-hud .cn { font-family: var(--f-cn-display); letter-spacing: .24em; color: var(--ink); }
+
+/* ── lightbox ── */
+dialog.lb { padding: 0; border: 1px solid var(--line-strong); background: var(--void); color: var(--ink); max-width: min(92vw, 980px); max-height: 92vh; width: auto; }
+dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
+.lb-inner { display: grid; gap: 10px; padding: 12px; }
+.lb-media img, .lb-media video { display: block; max-width: 100%; max-height: calc(92vh - 90px); margin: 0 auto; }
+.lb-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .2em; color: var(--mist); }
+.lb-close { font: inherit; letter-spacing: .24em; background: transparent; color: var(--ink); border: 1px solid var(--line-strong); padding: 6px 12px; cursor: pointer; }
+
+@media (max-width: 1000px) {
+  .chans { grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(100%, 620px); }
+}
+@media (max-width: 1040px) {
+  .nav a em { display: none; }
+  .ft span { padding: 14px 12px; letter-spacing: .12em; }
+}
+@media (max-width: 860px) {
+  .nav, .bar-cta .ghost { display: none; }
+  .hero { grid-template-columns: minmax(0, 1fr); grid-template-areas: "ml" "cp" "mr" "vw" "ch" "ft"; }
+  .mr, .vw, .ch { border-left: 0; }
+  .ch { border-bottom: 1px solid var(--rule); }
+  .cp { padding-block: 36px 40px; }
+  .vw { min-height: 0; aspect-ratio: 1 / 1; }
+  .head, .mani, .fcols { grid-template-columns: minmax(0, 1fr); }
+  .head > div + div, .spec-cell, .fcols > div + div { border-left: 0; border-top: 1px solid var(--rule); }
+  .head > div:first-child { padding-bottom: 30px; }
+  .head > div + div { padding-block: 22px 26px; }
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  .step { padding-block: 26px 30px; }
+  .step + .step { border-left: 0; border-top: 1px solid var(--rule); }
+  .fcols > div { padding-block: 26px 28px; }
+}
+@media (max-width: 760px) {
+  .lib { grid-template-columns: minmax(0, 1fr); }
+  .lib .col { display: contents; }
+  .work[data-n="001"] { order: 1; } .work[data-n="002"] { order: 2; } .work[data-n="003"] { order: 3; }
+  .work[data-n="004"] { order: 4; } .work[data-n="005"] { order: 5; } .work[data-n="006"] { order: 6; }
+}
+@media (max-width: 520px) {
+  .brand { padding: 0 14px; }
+  .brand .px, .brand .sl { display: none; }
+  .bar-cta { padding: 0 8px; }
+  .strip { padding: 11px 14px; letter-spacing: .14em; }
+  .mr .g { display: none; }
+  .ft span { padding: 12px 8px; gap: 6px; font-size: 10px; letter-spacing: .06em; }
+  .ch { padding: 10px 12px; gap: 5px; }
+  .chip { font-size: 12px; letter-spacing: .06em; padding: 5px 7px; }
+  .terrain-hud .r { display: none; }
+  .chans { gap: 8px; }
+  .chan { grid-template-columns: minmax(0, 1fr); grid-template-areas: "ic" "pf" "id" "go"; row-gap: 4px; padding: 12px; }
+  .cico { width: 36px; height: 36px; margin-bottom: 6px; }
+  .cid { font-size: 14px; }
+  .go { margin-top: 6px; letter-spacing: .08em; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M3 6.2c3-1.3 6-1.1 9 .9 3-2 6-2.2 9-.9v11.6c-3-1.3-6-1.1-9 .9-3-2-6-2.2-9-.9z"/><path d="M12 7.1v11.6"/><path d="M5.6 10.2h3.8M5.6 12.8h3.8M14.6 10.2h3.8M14.6 12.8h3.8" opacity=".55"/></symbol>
+  <symbol id="i-wave" viewBox="0 0 24 24"><path d="M3.5 10.5v3M7 7.5v9M10.5 4v16M14 8.5v7M17.5 6v12M21 10v4" stroke-linecap="square"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24"><rect x="2.6" y="6.6" width="12.8" height="10.8"/><path d="M15.4 10.4l6-3.4v10l-6-3.4z"/><path d="M5.6 9.6h2.4" opacity=".55"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M5.5 5l13 14M18.5 5l-13 14"/></symbol>
+</svg>
+
+<header class="row bar">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="星核 STAR CORE，回到顶部"><i class="spark" aria-hidden="true"></i><b>星核</b><span class="sl">/</span><span class="px">STAR CORE</span><span class="kbd">SIG·006</span></a>
+    <nav class="nav" aria-label="主导航">
+      <a href="#works"><em>01</em>信号</a>
+      <a href="#process"><em>02</em>工序</a>
+      <a href="#manifesto"><em>03</em>宣言</a>
+      <a href="#channels"><em>04</em>频道</a>
+    </nav>
+    <div class="bar-cta">
+      <button class="btn sm fill" type="button" data-open-n="002">最新信号 <span class="ar" aria-hidden="true">▶</span></button>
+      <a class="btn sm ghost" href="#channels">关注 <span class="ar" aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="row" id="top" aria-label="星核">
+  <div class="wrap hero">
+    <div class="strip ml"><i class="sq" aria-hidden="true"></i><span class="t">SIGNAL 001—006 · AI 画面 × 代码动效</span></div>
+    <div class="strip mr"><span class="t"><b id="vNo">No.006 · 守星人</b><span class="g"> · <span id="vGrid">LED</span></span></span><span class="live"><i aria-hidden="true"></i>LIVE</span></div>
+    <div class="cp">
+      <h1 class="title" aria-label="星核 STAR CORE"><span class="cn">星核</span><span class="en" aria-hidden="true">STAR<br>CORE</span></h1>
+      <p class="typed" id="typed" aria-hidden="true"></p>
+      <p class="lede">收集被黑夜吞没的光，把它们做成一颗星。画面由 AI 生成，动效由代码一帧一帧算出来。拖动画面上的分界线，看代码怎样重写一幅画。</p>
+      <div class="cta">
+        <a class="btn fill" href="#works">看全部作品 <span class="ar" aria-hidden="true">→</span></a>
+        <a class="btn" href="#channels">关注星核 <span class="ar" aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    <div class="vw" id="viewer">
+      <canvas id="view" role="img" aria-label="作品对比：左边是代码渲染的像素点阵，右边是 AI 原画"></canvas>
+      <span class="vlab l">CODE · 代码</span>
+      <span class="vlab r">AI · 原画</span>
+      <div class="knob" id="knob" role="slider" tabindex="0" aria-label="拖动分界线，对比代码与原画" aria-valuemin="2" aria-valuemax="98" aria-valuenow="62"><svg viewBox="0 0 14 9" aria-hidden="true"><path d="M4.5 .5l-4 4 4 4M9.5 .5l4 4-4 4" fill="none" stroke="currentColor"/></svg></div>
+      <svg class="mi" viewBox="0 0 46 12" aria-hidden="true"><path d="M1 0v12M4 0v12M5.5 0v12M9 0v12M12 0v12M13.5 0v12M17 0v12M21 0v12M22.5 0v12M26 0v12M28 0v12M31 0v12M34 0v12M35.5 0v12M39 0v12M42 0v12M44 0v12" stroke="currentColor" stroke-width="1.1"/></svg>
+      <button class="vopen" id="vOpen" type="button">↗ 大图</button>
+    </div>
+    <div class="ft"><span><i class="sq" aria-hidden="true"></i>AI 生成画面</span><span><i class="sq" aria-hidden="true"></i>代码逐帧动效</span><span><i class="sq" aria-hidden="true"></i>每件都有编号</span></div>
+    <div class="ch" role="group" aria-label="切换作品">
+      <button class="chip" type="button" data-i="0" aria-pressed="false" title="No.001">星门</button>
+      <button class="chip" type="button" data-i="1" aria-pressed="false" title="No.002">万圣夜</button>
+      <button class="chip" type="button" data-i="2" aria-pressed="false" title="No.003">深海信号</button>
+      <button class="chip" type="button" data-i="3" aria-pressed="false" title="No.004">蜕变</button>
+      <button class="chip" type="button" data-i="4" aria-pressed="false" title="No.005">全知</button>
+      <button class="chip" type="button" data-i="5" aria-pressed="true" title="No.006">守星人</button>
+    </div>
+  </div>
+</section>
+
+<div class="row hatch" aria-hidden="true"><div class="wrap"></div></div>
+
+<section class="row" id="works" aria-labelledby="h-works">
+  <div class="wrap">
+    <div class="head r">
+      <div>
+        <p class="eyebrow"><span class="n">01</span><span class="k">信号</span><span class="e">TRANSMISSIONS</span></p>
+        <h2 class="h2" id="h-works">六束信号，<br>一束接一束。</h2>
+      </div>
+      <div><p>每件作品都编了号，像一束接一束收到的信号。点开看大图，视频带声音。</p></div>
+    </div>
+    <div class="lib r">
+      <div class="col">
+        <figure class="work" data-n="001">
+          <button class="shot" type="button" data-n="001" data-type="video" data-src="media/beyond.mp4" data-title="No.001 · BEYOND · 星门" aria-label="播放 No.001 星门">
+            <img src="media/beyond-poster.jpg" alt="兜帽人沿着长阶走向两根光柱之间被吞没的星，上方写着 BEYOND" width="720" height="1280" loading="lazy">
+            <video muted loop playsinline preload="none"></video>
+            <span class="scan"></span>
+          </button>
+          <figcaption>
+            <div class="cap-bar"><span class="k"><span class="no">001</span><span class="lat">BEYOND</span><span class="cn">星门</span></span><span class="d"><b>▶ MP4 13S</b> · 9:16</span></div>
+            <p class="cap-line">一个人走向看不见尽头的门，门里悬着一颗被吞没的星。</p>
+          </figcaption>
+        </figure>
+        <figure class="work" data-n="003">
+          <button class="shot" type="button" data-n="003" data-type="image" data-src="media/deep-signal.jpg" data-title="No.003 · DEEP SIGNAL · 深海信号" aria-label="查看 No.003 深海信号">
+            <img src="media/deep-signal.jpg" alt="一头鲸在星空里游过，身体向下溶解成像素，旁边写着 DEEP SIGNAL" width="1200" height="675" loading="lazy">
+            <span class="scan"></span>
+          </button>
+          <figcaption>
+            <div class="cap-bar"><span class="k"><span class="no">003</span><span class="lat">DEEP SIGNAL</span><span class="cn">深海信号</span></span><span class="d">16:9</span></div>
+            <p class="cap-line">一头鲸游进了深空，把远处的信号带了回来。</p>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col">
+        <figure class="work ember" data-n="002">
+          <button class="shot" type="button" data-n="002" data-type="video" data-src="media/halloween.mp4" data-title="No.002 · HALLOWEEN · 万圣夜" aria-label="播放 No.002 万圣夜">
+            <img src="media/halloween-poster.jpg" alt="橙色月亮下的城堡，死神伸手去够发光的南瓜灯，蝙蝠飞过月亮" width="720" height="960" loading="lazy">
+            <video muted loop playsinline preload="none"></video>
+            <span class="scan"></span>
+          </button>
+          <figcaption>
+            <div class="cap-bar"><span class="k"><span class="no">002</span><span class="lat">HALLOWEEN</span><span class="cn">万圣夜</span></span><span class="d"><b>▶ MP4 13S</b> · 3:4</span></div>
+            <p class="cap-line">南瓜灯在风里一明一灭。它伸手去够那盏灯，只是太久没见过光了。</p>
+          </figcaption>
+        </figure>
+        <figure class="work" data-n="005">
+          <button class="shot" type="button" data-n="005" data-type="image" data-src="media/omniscient.jpg" data-title="No.005 · OMNISCIENT · 全知" aria-label="查看 No.005 全知">
+            <img src="media/omniscient.jpg" alt="兜帽人置身 HUD 界面中，四周写着 OBSERVE ANALYZE DECODE REBUILD" width="900" height="900" loading="lazy">
+            <span class="scan"></span>
+          </button>
+          <figcaption>
+            <div class="cap-bar"><span class="k"><span class="no">005</span><span class="lat">OMNISCIENT</span><span class="cn">全知</span></span><span class="d">1:1</span></div>
+            <p class="cap-line">观察，解析，解码，重建。它看得见一切，除了自己的脸。</p>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col">
+        <figure class="work" data-n="004">
+          <button class="shot" type="button" data-n="004" data-type="image" data-src="media/metamorphosis.jpg" data-title="No.004 · METAMORPHOSIS · 蜕变" aria-label="查看 No.004 蜕变">
+            <img src="media/metamorphosis.jpg" alt="一只蝴蝶的翅膀溶解成竖直的像素条，背后是黑色的日蚀和轨道线" width="900" height="1200" loading="lazy">
+            <span class="scan"></span>
+          </button>
+          <figcaption>
+            <div class="cap-bar"><span class="k"><span class="no">004</span><span class="lat">METAMORPHOSIS</span><span class="cn">蜕变</span></span><span class="d">3:4</span></div>
+            <p class="cap-line">数据也会长出翅膀，只是飞起来的时候会一点点碎掉。</p>
+          </figcaption>
+        </figure>
+        <figure class="work" data-n="006">
+          <button class="shot" type="button" data-n="006" data-type="image" data-src="media/keeper.jpg" data-title="No.006 · KEEPER · 守星人" aria-label="查看 No.006 守星人">
+            <img src="media/keeper.jpg" alt="兜帽人的脸里只有一颗四芒星，身后是星环和轨道" width="900" height="900" loading="lazy">
+            <span class="scan"></span>
+          </button>
+          <figcaption>
+            <div class="cap-bar"><span class="k"><span class="no">006</span><span class="lat">KEEPER</span><span class="cn">守星人</span></span><span class="d">1:1 · 头像</span></div>
+            <p class="cap-line">守着星核的人，脸上只有一颗星。</p>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+    <p class="lib-more r"><b>+</b> 更多信号持续接收中 · 小红书 / 抖音 / 视频号 / X 同步更新 · <a href="#channels">去关注 →</a></p>
+  </div>
+</section>
+
+<div class="row hatch" aria-hidden="true"><div class="wrap"></div></div>
+
+<section class="row" id="process" aria-labelledby="h-process">
+  <div class="wrap">
+    <div class="head r">
+      <div>
+        <p class="eyebrow"><span class="n">02</span><span class="k">工序</span><span class="e">PROCESS</span></p>
+        <h2 class="h2" id="h-process">从一张画，<br>到一束信号。</h2>
+      </div>
+      <div><p>画面交给 AI，动效交给代码。视频里的每一帧，都是一行行代码算出来的。</p></div>
+    </div>
+    <div class="steps r">
+      <div class="step"><span class="badge">01</span><h3>生成画面</h3><p>用 AI 生成一张静止的画。纯黑的底，电光蓝的光，冰白的星。</p></div>
+      <div class="step"><span class="badge">02</span><h3>拆层，写动效</h3><p>用代码把画面拆成十几层：光柱、星环、文字、尘埃，各自运动，镜头慢慢推近。</p></div>
+      <div class="step"><span class="badge">03</span><h3>合成声音</h3><p>钟声、风声和低频也由代码合成。最后编上号，作为一束信号发出去。</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="row hatch" aria-hidden="true"><div class="wrap"></div></div>
+
+<section class="row" id="manifesto" aria-labelledby="h-mani">
+  <div class="wrap">
+    <div class="head r">
+      <div>
+        <p class="eyebrow"><span class="n">03</span><span class="k">宣言</span><span class="e">MANIFESTO</span></p>
+        <h2 class="h2" id="h-mani">一束光，<br>走了上万年。</h2>
+      </div>
+      <div><p>一束光从恒星的核心出发，要在星体内部辗转上万年，才能抵达表面。</p></div>
+    </div>
+    <div class="mani r">
+      <div class="mani-body">
+        <p>我们抬头看见的每一点星光，都走过这样一段很长的路。很多光在路上就被黑夜吞没了，没有人看见。</p>
+        <p>星核做的事很简单：把这些光收集起来。用 AI 生成画面，用代码让它们动起来，最后统一成同一种钴蓝色的宇宙。</p>
+        <p>每一件作品都编了号，一束接一束地发出去。也许你刚好在某一级台阶上，接收到其中一束。</p>
+        <p class="sign">每一级台阶，都通往星的核心。<span>星核 · DOUB1EB</span></p>
+      </div>
+      <div class="spec-cell">
+        <div class="spec">
+          <div class="spec-h"><span>SPEC · 星核</span><span>REV 006</span></div>
+          <dl>
+            <div><dt>画面</dt><dd>AI 生成</dd></div>
+            <div><dt>动效</dt><dd>代码逐帧计算</dd></div>
+            <div><dt>声音</dt><dd>代码合成</dd></div>
+            <div><dt>色彩</dt><dd><span class="sw" aria-hidden="true"><i style="background:#03040a"></i><i style="background:#1f3cff"></i><i style="background:#e2eeff"></i></span>纯黑 · 电光蓝 · 冰白</dd></div>
+            <div><dt>母题</dt><dd>星门 · 日蚀 · 四芒星 · 月相 · 信号编号</dd></div>
+            <div><dt>坐标</dt><dd>β Ori 参宿七，一颗蓝超巨星<small>RA 05h14m32s · DEC −08°12′06″</small></dd></div>
+            <div><dt>编码</dt><dd>星核<small title="「星核」的 UTF-8 编码">UTF-8 · E6 98 9F E6 A0 B8</small></dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="row hatch" aria-hidden="true"><div class="wrap"></div></div>
+
+<section class="row" id="channels" aria-labelledby="h-chan">
+  <div class="wrap call">
+    <canvas id="field" aria-hidden="true"></canvas>
+    <div class="call-in">
+      <p class="eyebrow"><span class="n">04</span><span class="k">频道</span><span class="e">FREQUENCY</span></p>
+      <h2 class="h2" id="h-chan">下一束信号，正在路上。</h2>
+      <p>四个频道同步更新，点名字就能找到星核。</p>
+      <ul class="chans">
+        <li><a class="chan" href="https://www.xiaohongshu.com/user/profile/68f337b8000000003703143b" target="_blank" rel="noopener noreferrer"><span class="cico"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg></span><span class="pf">小红书</span><span class="cid">星核｜StarCore</span><span class="go"><span>看主页</span><span aria-hidden="true">↗</span></span></a></li>
+        <li><a class="chan" href="https://www.douyin.com/search/%E6%98%9F%E6%A0%B8%EF%BD%9CStarCore?type=user" target="_blank" rel="noopener noreferrer"><span class="cico"><svg class="ico" aria-hidden="true"><use href="#i-wave"/></svg></span><span class="pf">抖音</span><span class="cid">星核｜StarCore</span><span class="go"><span>去搜索</span><span aria-hidden="true">↗</span></span></a></li>
+        <li><button class="chan" type="button" data-copy="星核StarCore" aria-label="视频号 星核StarCore，点击复制名字，到微信里搜索"><span class="cico"><svg class="ico" aria-hidden="true"><use href="#i-cam"/></svg></span><span class="pf">视频号</span><span class="cid">星核StarCore</span><span class="go"><span>复制 · 微信里搜</span><span aria-hidden="true">⧉</span></span></button></li>
+        <li><a class="chan" href="https://x.com/BDoub1e" target="_blank" rel="noopener noreferrer"><span class="cico"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></span><span class="pf">X</span><span class="cid">星核·StarCore</span><span class="go"><span>@BDoub1e</span><span aria-hidden="true">↗</span></span></a></li>
+      </ul>
+      <p class="note">想合作或定制，在任一频道私信星核。</p>
+    </div>
+  </div>
+</section>
+
+<div class="row hatch" aria-hidden="true"><div class="wrap"></div></div>
+</main>
+
+<footer class="row foot">
+  <div class="wrap">
+    <div class="fcols r">
+      <div>
+        <a class="brand" href="#top"><i class="spark" aria-hidden="true"></i><b>星核</b><span class="sl">/</span><span class="px">STAR CORE</span></a>
+        <p class="fdesc">收集被黑夜吞没的光，把它们做成一颗星。AI 生成画面，代码写出动效。</p>
+      </div>
+      <div>
+        <p class="fh">目录 · INDEX</p>
+        <ul class="flist">
+          <li><a href="#works"><em>01</em>信号</a></li>
+          <li><a href="#process"><em>02</em>工序</a></li>
+          <li><a href="#manifesto"><em>03</em>宣言</a></li>
+          <li><a href="#channels"><em>04</em>频道</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="fh">频道 · FREQUENCY</p>
+        <ul class="flist">
+          <li><a href="https://www.xiaohongshu.com/user/profile/68f337b8000000003703143b" target="_blank" rel="noopener noreferrer"><svg class="ico" aria-hidden="true"><use href="#i-book"/></svg><span class="m">小红书</span>星核｜StarCore</a></li>
+          <li><a href="https://www.douyin.com/search/%E6%98%9F%E6%A0%B8%EF%BD%9CStarCore?type=user" target="_blank" rel="noopener noreferrer"><svg class="ico" aria-hidden="true"><use href="#i-wave"/></svg><span class="m">抖音</span>星核｜StarCore</a></li>
+          <li><button class="flink" type="button" data-copy="星核StarCore" aria-label="视频号 星核StarCore，点击复制名字，到微信里搜索"><svg class="ico" aria-hidden="true"><use href="#i-cam"/></svg><span class="m">视频号</span>星核StarCore</button></li>
+          <li><a href="https://x.com/BDoub1e" target="_blank" rel="noopener noreferrer"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg><span class="m">X</span>星核·StarCore</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="fbot r">
+      <span>© 2026 星核 STAR CORE · DOUB1EB</span>
+      <span class="phases" aria-hidden="true"><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="f"></i><i class="r3"></i><i class="r2"></i><i class="r1"></i></span>
+      <span class="bits" title="「星核」的 UTF-8 编码">11100110 10011000 10011111 11100110 10100000 10111000</span>
+    </div>
+  </div>
+</footer>
+<div class="terrain">
+  <canvas id="terrain" role="img" aria-label="像素体素地形，中间一道台阶一级一级通向发光的星门"></canvas>
+  <div class="terrain-hud"><span class="cn">每一级台阶，都通往星的核心</span><span class="r" id="stepCount">STEP — / —</span></div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<dialog class="lb" id="lb" aria-label="作品大图">
+  <div class="lb-inner">
+    <div class="lb-media" id="lbMedia"></div>
+    <div class="lb-bar"><span id="lbTitle"></span><button class="lb-close" id="lbClose" type="button">关闭</button></div>
+  </div>
+</dialog>
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rnd = (a, b) => a + Math.random() * (b - a);
+
+  /* ── works wall: hover preview + lightbox ── */
+  const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const lb = document.getElementById('lb'), lbMedia = document.getElementById('lbMedia'), lbTitle = document.getElementById('lbTitle');
+  const shots = [...document.querySelectorAll('.shot')];
+  const shotBy = n => document.querySelector(`.shot[data-n="${n}"]`);
+  function openShot(btn) {
+    if (!btn) return;
+    lbMedia.replaceChildren();
+    let el;
+    if (btn.dataset.type === 'video') {
+      el = document.createElement('video');
+      el.src = btn.dataset.src; el.controls = true; el.playsInline = true; el.autoplay = true;
+    } else {
+      el = document.createElement('img');
+      el.src = btn.dataset.src; el.alt = btn.querySelector('img').alt;
+    }
+    lbMedia.append(el);
+    lbTitle.textContent = btn.dataset.title;
+    lb.showModal();
+  }
+  shots.forEach(btn => {
+    const vid = btn.querySelector('video');
+    if (vid && canHover && !reduce) {
+      btn.addEventListener('mouseenter', () => {
+        if (!vid.src) vid.src = btn.dataset.src;
+        vid.play().then(() => btn.classList.add('playing')).catch(() => {});
+      });
+      btn.addEventListener('mouseleave', () => { vid.pause(); btn.classList.remove('playing'); });
+    }
+    btn.addEventListener('click', () => {
+      if (vid) { vid.pause(); btn.classList.remove('playing'); }
+      openShot(btn);
+    });
+  });
+  document.querySelectorAll('[data-open-n]').forEach(b => b.addEventListener('click', () => openShot(shotBy(b.dataset.openN))));
+  document.getElementById('lbClose').addEventListener('click', () => lb.close());
+  lb.addEventListener('click', e => { if (e.target === lb) lb.close(); });
+  lb.addEventListener('close', () => { const v = lbMedia.querySelector('video'); if (v) v.pause(); lbMedia.replaceChildren(); });
+
+  /* ── hero viewer: a code-rendered LED layer dragged across the AI original ── */
+  const WORKS = [
+    { n: '001', cn: '星门', src: 'media/beyond-poster.jpg', line: '门里悬着一颗星', fx: .5, fy: .4, star: [.506, .32], video: true },
+    { n: '002', cn: '万圣夜', src: 'media/halloween-poster.jpg', line: '伸手去够一盏灯', fx: .5, fy: .52, star: [.533, .389], video: true, ember: true },
+    { n: '003', cn: '深海信号', src: 'media/deep-signal.jpg', line: '鲸游进了深空', fx: .6, fy: .5, star: [.378, .175] },
+    { n: '004', cn: '蜕变', src: 'media/metamorphosis.jpg', line: '数据长出了翅膀', fx: .5, fy: .47, star: [.501, .393] },
+    { n: '005', cn: '全知', src: 'media/omniscient.jpg', line: '它看得见一切', fx: .5, fy: .5, star: [.504, .447] },
+    { n: '006', cn: '守星人', src: 'media/keeper.jpg', line: '脸上只有一颗星', fx: .5, fy: .5, star: [.501, .389] },
+  ];
+  const viewer = document.getElementById('viewer'), view = document.getElementById('view'), vx = view.getContext('2d');
+  const knob = document.getElementById('knob'), vNo = document.getElementById('vNo'), vGrid = document.getElementById('vGrid'), vOpen = document.getElementById('vOpen');
+  const typed = document.getElementById('typed');
+  const chips = [...document.querySelectorAll('.chip')];
+  const mid = document.createElement('canvas'), midx = mid.getContext('2d');
+  const tmp = document.createElement('canvas'), tmpx = tmp.getContext('2d');
+  const tiles = new Map();
+  let VW = 1, VH = 1, VD = 1, cur = -1, want = -1, split = .62, auto = !reduce;
+  let drips = [], dust = [], switchAt = -9, nextAuto = 1e9, nextGlitch = 4.5, vraf = 0, vVisible = false;
+  const vt0 = performance.now();
+  const now = () => (performance.now() - vt0) / 1000;
+
+  function vSize() {
+    const r = view.getBoundingClientRect();
+    VD = Math.min(2, window.devicePixelRatio || 1);
+    VW = Math.max(1, r.width); VH = Math.max(1, r.height);
+    view.width = Math.round(VW * VD); view.height = Math.round(VH * VD);
+    for (const w of WORKS) w.code = null;
+    drips = Array.from({ length: 46 }, () => ({ x: rnd(.02, .97), w: rnd(.004, .016), y0: rnd(.45, .88), len: rnd(.03, .14), sp: rnd(.25, .9), ph: rnd(0, 6.28) }));
+    dust = Array.from({ length: 40 }, () => ({ a: rnd(0, 6.283), r: rnd(.4, 1), v: rnd(.02, .08) * (Math.random() < .5 ? -1 : 1), s: rnd(.6, 1.5), p: rnd(0, 6.28) }));
+  }
+  function load(w) {
+    if (!w.ready) w.ready = new Promise(res => {
+      const im = new Image();
+      im.decoding = 'async';
+      im.onload = () => { w.img = im; res(true); };
+      im.onerror = () => res(false);
+      im.src = w.src;
+    });
+    return w.ready;
+  }
+  function cover(iw, ih, fx, fy) {
+    const s = Math.max(VW / iw, VH / ih), sw = VW / s, sh = VH / s;
+    return { sx: Math.min(iw - sw, Math.max(0, fx * iw - sw / 2)), sy: Math.min(ih - sh, Math.max(0, fy * ih - sh / 2)), sw, sh };
+  }
+  function dotTile(cell) {
+    if (tiles.has(cell)) return tiles.get(cell);
+    const t = document.createElement('canvas'); t.width = t.height = cell;
+    const c = t.getContext('2d'), m = cell / 2;
+    const g = c.createRadialGradient(m, m, 0, m, m, m);
+    g.addColorStop(0, '#fff'); g.addColorStop(.6, '#fff'); g.addColorStop(.74, 'rgba(255,255,255,.3)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    c.fillStyle = g; c.fillRect(0, 0, cell, cell);
+    tiles.set(cell, t);
+    return t;
+  }
+  // the code layer: average each cell, push the contrast, tint it, then mask the cells into round LEDs over a soft bloom.
+  // Everything is drawn with composite modes, so no pixels are ever read back.
+  function build(w) {
+    const im = w.img, iw = im.naturalWidth, ih = im.naturalHeight;
+    const cr = w.cr = cover(iw, ih, w.fx, w.fy);
+    const cell = Math.max(3, Math.round((VW < 520 ? 4.5 : 6) * VD));
+    const Wd = view.width, Hd = view.height, cols = Math.ceil(Wd / cell), rows = Math.ceil(Hd / cell);
+    const gx = cols * cell / Wd, gy = rows * cell / Hd;
+    w.cell = cell; w.grid = `${cols}×${rows}`;
+    mid.width = cols * 4; mid.height = rows * 4;
+    midx.imageSmoothingEnabled = true; midx.imageSmoothingQuality = 'high';
+    midx.drawImage(im, cr.sx, cr.sy, Math.min(iw - cr.sx, cr.sw * gx), Math.min(ih - cr.sy, cr.sh * gy), 0, 0, mid.width, mid.height);
+    const sm = document.createElement('canvas'); sm.width = cols; sm.height = rows;
+    const smx = sm.getContext('2d');
+    smx.imageSmoothingEnabled = true; smx.imageSmoothingQuality = 'high';
+    smx.drawImage(mid, 0, 0, cols, rows);
+    smx.globalCompositeOperation = 'multiply'; smx.drawImage(sm, 0, 0);
+    smx.globalCompositeOperation = 'lighter'; smx.globalAlpha = .6; smx.drawImage(sm, 0, 0); smx.globalAlpha = 1;
+    smx.globalCompositeOperation = 'color'; smx.fillStyle = w.ember ? '#ff7a26' : '#2f5bff'; smx.fillRect(0, 0, cols, rows);
+    smx.globalCompositeOperation = 'source-over';
+    const led = document.createElement('canvas'); led.width = Wd; led.height = Hd;
+    const ledx = led.getContext('2d');
+    ledx.imageSmoothingEnabled = false; ledx.drawImage(sm, 0, 0, cols * cell, rows * cell);
+    ledx.globalCompositeOperation = 'destination-in'; ledx.fillStyle = ledx.createPattern(dotTile(cell), 'repeat'); ledx.fillRect(0, 0, Wd, Hd);
+    const code = document.createElement('canvas'); code.width = Wd; code.height = Hd;
+    const codex = code.getContext('2d');
+    codex.fillStyle = '#03040a'; codex.fillRect(0, 0, Wd, Hd);
+    codex.imageSmoothingEnabled = true; codex.globalAlpha = .3; codex.drawImage(sm, 0, 0, cols * cell, rows * cell); codex.globalAlpha = 1;
+    codex.globalCompositeOperation = 'lighter'; codex.drawImage(led, 0, 0); codex.globalCompositeOperation = 'source-over';
+    w.code = code;
+    w.sp = [(w.star[0] * iw - cr.sx) / cr.sw * VW, (w.star[1] * ih - cr.sy) / cr.sh * VH];
+  }
+  function sparkle(c, x, y, s, a) {
+    const g = c.createRadialGradient(x, y, 0, x, y, s * 2.2);
+    g.addColorStop(0, `rgba(240,248,255,${a})`); g.addColorStop(.22, `rgba(143,207,245,${a * .6})`); g.addColorStop(1, 'rgba(31,60,255,0)');
+    c.fillStyle = g; c.beginPath(); c.arc(x, y, s * 2.2, 0, 6.283); c.fill();
+    c.fillStyle = `rgba(232,244,255,${a})`;
+    c.fillRect(x - s * 3.4, y - .6, s * 6.8, 1.2); c.fillRect(x - .6, y - s * 3.4, 1.2, s * 6.8);
+  }
+  // HUD on the code side: dashed crosshair, dotted ring with turning ticks, orbiting dust, cardinal stars, the work's own star, a scan line
+  function hud(c, t, w) {
+    const cx = VW / 2, cy = VH / 2, R = Math.min(VW, VH) * .42;
+    c.fillStyle = 'rgba(120,170,255,.2)';
+    for (let y = 0; y < VH; y += 6) c.fillRect(cx - .5, y, 1, 2.5);
+    for (let x = 0; x < VW; x += 6) c.fillRect(x, cy - .5, 2.5, 1);
+    c.save(); c.translate(cx, cy);
+    c.strokeStyle = 'rgba(160,200,255,.55)'; c.lineWidth = 1; c.setLineDash([1.5, 4.5]);
+    c.beginPath(); c.arc(0, 0, R, 0, 6.283); c.stroke();
+    c.setLineDash([]);
+    c.rotate(t * .03);
+    for (let i = 0; i < 72; i++) {
+      const a = i / 72 * 6.283, long = i % 9 === 0, l = long ? R * .05 : R * .02;
+      c.strokeStyle = long ? 'rgba(170,215,255,.75)' : 'rgba(120,160,255,.38)';
+      c.beginPath(); c.moveTo(Math.cos(a) * (R + 4), Math.sin(a) * (R + 4)); c.lineTo(Math.cos(a) * (R + 4 + l), Math.sin(a) * (R + 4 + l)); c.stroke();
+    }
+    c.restore();
+    c.globalCompositeOperation = 'lighter';
+    for (const p of dust) {
+      const a = p.a + t * p.v, tw = .5 + .5 * Math.sin(t * 2 + p.p);
+      c.fillStyle = `rgba(143,207,245,${.25 + .5 * tw})`;
+      c.fillRect(cx + Math.cos(a) * p.r * R - p.s / 2, cy + Math.sin(a) * p.r * R * .96 - p.s / 2, p.s, p.s);
+    }
+    [[0, -1], [1, 0], [0, 1], [-1, 0]].forEach(([dx, dy], i) => {
+      const tw = .5 + .5 * Math.sin(t * 1.3 + i * 1.7);
+      sparkle(c, cx + dx * R, cy + dy * R, R * (.013 + .009 * tw), .45 + .5 * tw);
+    });
+    const br = .65 + .35 * Math.sin(t * 2.1), px = w.sp[0], py = w.sp[1];
+    sparkle(c, px, py, R * (.027 + .013 * br), .55 + .45 * br);
+    const g = c.createRadialGradient(px, py, 0, px, py, R * .36);
+    g.addColorStop(0, `rgba(31,60,255,${.35 * br})`); g.addColorStop(1, 'rgba(31,60,255,0)');
+    c.fillStyle = g; c.beginPath(); c.arc(px, py, R * .36, 0, 6.283); c.fill();
+    const sy = ((t % 5.5) / 5.5) * VH * 1.2 - VH * .1;
+    const sg = c.createLinearGradient(0, sy - VH * .05, 0, sy + 2);
+    sg.addColorStop(0, 'rgba(31,60,255,0)'); sg.addColorStop(1, 'rgba(120,180,255,.22)');
+    c.fillStyle = sg; c.fillRect(0, sy - VH * .05, VW, VH * .05 + 2);
+    c.fillStyle = 'rgba(200,230,255,.35)'; c.fillRect(0, sy, VW, 1);
+    c.globalCompositeOperation = 'source-over';
+  }
+  function vDraw(t) {
+    const w = WORKS[cur];
+    if (!w || !w.code) return;
+    const Wd = view.width, Hd = view.height, cut = Math.round(split * Wd), cr = w.cr, cell = w.cell;
+    vx.setTransform(1, 0, 0, 1, 0, 0);
+    vx.globalCompositeOperation = 'source-over'; vx.globalAlpha = 1;
+    vx.drawImage(w.img, cr.sx, cr.sy, cr.sw, cr.sh, 0, 0, Wd, Hd);
+    vx.save();
+    vx.beginPath(); vx.rect(0, 0, cut, Hd); vx.clip();
+    vx.drawImage(w.code, 0, 0);
+    // pixel drip: single rows of LEDs smeared downward
+    vx.globalAlpha = .85;
+    for (const d of drips) {
+      const L = d.len * (.35 + .65 * (.5 + .5 * Math.sin(t * d.sp + d.ph)));
+      const x = Math.floor(d.x * Wd / cell) * cell;
+      const wd = Math.min(Wd - x, Math.max(cell, Math.round(d.w * Wd / cell) * cell));
+      const y = Math.floor(d.y0 * Hd / cell) * cell + (cell >> 1) - 1;
+      if (wd > 0) vx.drawImage(w.code, x, y, wd, 2, x, y, wd, L * Hd);
+    }
+    vx.globalAlpha = 1;
+    vx.setTransform(VD, 0, 0, VD, 0, 0);
+    hud(vx, t, w);
+    vx.restore();
+    // the seam
+    vx.setTransform(1, 0, 0, 1, 0, 0);
+    const gw = 16 * VD, g = vx.createLinearGradient(cut - gw, 0, cut + gw, 0);
+    g.addColorStop(0, 'rgba(31,60,255,0)'); g.addColorStop(.5, 'rgba(80,130,255,.3)'); g.addColorStop(1, 'rgba(31,60,255,0)');
+    vx.globalCompositeOperation = 'lighter'; vx.fillStyle = g; vx.fillRect(cut - gw, 0, gw * 2, Hd);
+    vx.globalCompositeOperation = 'source-over';
+    vx.fillStyle = 'rgba(226,238,255,.95)'; vx.fillRect(cut - Math.floor(VD / 2), 0, Math.max(1, Math.round(VD)), Hd);
+  }
+  function glitch() {
+    vx.setTransform(1, 0, 0, 1, 0, 0);
+    const n = 3 + (Math.random() * 4 | 0);
+    for (let i = 0; i < n; i++) {
+      const h = Math.round((4 + Math.random() * 30) * VD), y = Math.floor(Math.random() * (view.height - h)), dx = (Math.random() - .5) * 40 * VD;
+      vx.drawImage(view, 0, y, view.width, h, dx, y, view.width, h);
+    }
+  }
+  function resolveFrom(block) {
+    const w = Math.max(1, Math.round(view.width / block)), h = Math.max(1, Math.round(view.height / block));
+    tmp.width = w; tmp.height = h;
+    tmpx.drawImage(view, 0, 0, w, h);
+    vx.setTransform(1, 0, 0, 1, 0, 0);
+    vx.imageSmoothingEnabled = false; vx.drawImage(tmp, 0, 0, view.width, view.height); vx.imageSmoothingEnabled = true;
+  }
+
+  // the second headline line types the current work's line
+  let typeTimer = 0;
+  function typeLine(text, ember) {
+    clearTimeout(typeTimer);
+    typed.classList.toggle('ember', !!ember);
+    if (reduce) { typed.textContent = text; return; }
+    const step = () => {
+      const s = typed.textContent;
+      if (!text.startsWith(s)) { typed.textContent = s.slice(0, -1); typeTimer = setTimeout(step, 36); }
+      else if (s.length < text.length) { typed.textContent = text.slice(0, s.length + 1); typeTimer = setTimeout(step, 110); }
+    };
+    step();
+  }
+  function select(i, user) {
+    if (user) auto = false;
+    want = i;
+    const w = WORKS[i];
+    chips.forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.i === i)));
+    vNo.textContent = `No.${w.n} · ${w.cn}`;
+    vOpen.textContent = w.video ? '▶ 播放 · 13S' : '↗ 大图';
+    vOpen.setAttribute('aria-label', `${w.video ? '播放' : '查看'} No.${w.n} ${w.cn}`);
+    typeLine(w.line, w.ember);
+    load(w).then(ok => {
+      if (!ok || want !== i) return;
+      WORKS.forEach((o, k) => { if (k !== i && k !== cur) o.code = null; });
+      if (!w.code) build(w);
+      cur = i;
+      switchAt = now();
+      nextAuto = switchAt + 7.5;
+      vGrid.textContent = `LED ${w.grid}`;
+      if (!vraf) vDraw(reduce ? 2 : switchAt);
+      load(WORKS[(i + 1) % WORKS.length]);
+    });
+  }
+  function setSplit(v) {
+    split = Math.min(.98, Math.max(.02, v));
+    knob.style.left = `${split * 100}%`;
+    knob.setAttribute('aria-valuenow', String(Math.round(split * 100)));
+    if (!vraf) vDraw(reduce ? 2 : now());
+  }
+  const fromX = x => { const r = viewer.getBoundingClientRect(); return (x - r.left) / r.width; };
+  let drag = null;
+  viewer.addEventListener('pointerdown', e => {
+    if (e.target.closest('.vopen')) return;
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, on: e.pointerType !== 'touch' || knob.contains(e.target) };
+    if (drag.on) { auto = false; try { viewer.setPointerCapture(e.pointerId); } catch (_) {} setSplit(fromX(e.clientX)); e.preventDefault(); }
+  });
+  viewer.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (!drag.on) {
+      const dx = Math.abs(e.clientX - drag.x), dy = Math.abs(e.clientY - drag.y);
+      if (dx > 6 && dx > dy) { drag.on = true; auto = false; try { viewer.setPointerCapture(e.pointerId); } catch (_) {} }
+      else { if (dy > 8) drag = null; return; }
+    }
+    setSplit(fromX(e.clientX));
+  });
+  const endDrag = () => { drag = null; };
+  viewer.addEventListener('pointerup', endDrag);
+  viewer.addEventListener('pointercancel', endDrag);
+  knob.addEventListener('keydown', e => {
+    const step = { ArrowLeft: -.05, ArrowDown: -.05, ArrowRight: .05, ArrowUp: .05, Home: -1, End: 1 }[e.key];
+    if (step === undefined) return;
+    e.preventDefault(); auto = false; setSplit(split + step);
+  });
+  vOpen.addEventListener('click', () => { const w = WORKS[cur >= 0 ? cur : want]; if (w) openShot(shotBy(w.n)); });
+  chips.forEach(c => c.addEventListener('click', () => select(+c.dataset.i, true)));
+
+  function vLoop() {
+    const t = now();
+    vDraw(t);
+    const since = t - switchAt;
+    if (since < .8) { const e = 1 - Math.pow(1 - since / .8, 1.5), b = Math.round(Math.pow(2, 5 * (1 - e))); if (b > 1) resolveFrom(b); }
+    if (t > nextGlitch) { glitch(); if (t > nextGlitch + .13) nextGlitch = t + 4.5 + Math.random() * 4; }
+    if (auto && t > nextAuto && want === cur) select((cur + 1) % WORKS.length, false);
+    vraf = vVisible ? requestAnimationFrame(vLoop) : 0;
+  }
+  vSize();
+  select(5, false);
+  if (!reduce) new IntersectionObserver(([e]) => {
+    vVisible = e.isIntersecting;
+    if (vVisible && !vraf) { nextAuto = Math.max(nextAuto, now() + 3); vraf = requestAnimationFrame(vLoop); }
+  }).observe(viewer);
+  let vrt; addEventListener('resize', () => { clearTimeout(vrt); vrt = setTimeout(() => { vSize(); const w = WORKS[cur]; if (w && w.img) build(w); vDraw(reduce ? 2 : now()); }, 120); });
+
+  /* ── channels: 视频号 has no web search page, so its button copies the name for WeChat search ── */
+  const toast = document.getElementById('toast');
+  let toastT = 0;
+  const say = msg => { toast.textContent = msg; toast.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => toast.classList.remove('on'), 2800); };
+  function copyText(txt) {
+    const legacy = () => {
+      const ta = document.createElement('textarea');
+      ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+      document.body.append(ta); ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (_) {}
+      ta.remove();
+      return ok;
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(txt).then(() => true, () => legacy());
+    return Promise.resolve(legacy());
+  }
+  document.querySelectorAll('[data-copy]').forEach(btn => btn.addEventListener('click', () => {
+    const txt = btn.dataset.copy;
+    copyText(txt).then(ok => say(ok ? `已复制「${txt}」，打开微信搜一搜就能找到` : `在微信里搜索「${txt}」`));
+  }));
+
+  /* ── call band: a slow field of signal glyphs (the UTF-8 bytes of 星核, bits, + and ·) ── */
+  (() => {
+    const fv = document.getElementById('field'), fc = fv.getContext('2d');
+    const HEX = 'E6989FE6A0B8';
+    const pick = () => { const r = Math.random(); return r < .46 ? '·' : r < .6 ? '+' : r < .8 ? (Math.random() < .5 ? '0' : '1') : r < .985 ? HEX[Math.random() * HEX.length | 0] : (Math.random() < .5 ? '星' : '核'); };
+    let W = 1, H = 1, D = 1, cs = 26, cols = 0, rows = 0, ox = 0, oy = 0, cells = [];
+    function size() {
+      const r = fv.getBoundingClientRect();
+      D = Math.min(2, window.devicePixelRatio || 1); W = Math.max(1, r.width); H = Math.max(1, r.height);
+      fv.width = Math.round(W * D); fv.height = Math.round(H * D);
+      cs = W < 560 ? 22 : 26; cols = Math.ceil(W / cs); rows = Math.ceil(H / cs);
+      ox = (W - cols * cs) / 2; oy = (H - rows * cs) / 2;
+      cells = Array.from({ length: cols * rows }, () => ({ ch: pick(), lit: Math.random() < .07, ph: rnd(0, 6.28), f: rnd(.35, .9) }));
+    }
+    function draw(t) {
+      fc.setTransform(D, 0, 0, D, 0, 0); fc.clearRect(0, 0, W, H);
+      fc.font = `${Math.round(cs * .46)}px "Share Tech Mono", ui-monospace, monospace`;
+      fc.textAlign = 'center'; fc.textBaseline = 'middle'; fc.lineWidth = 1;
+      const cx = W / 2, cy = H / 2;
+      for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+        const c = cells[j * cols + i], x = ox + i * cs + cs / 2, y = oy + j * cs + cs / 2;
+        const k = Math.min(1, Math.hypot((x - cx) / (W * .5), (y - cy) / (H * .5)));
+        let a = .06 + .3 * k * k;
+        if (c.lit) {
+          const tw = Math.pow(Math.max(0, Math.sin(t * c.f + c.ph)), 8);
+          if (tw > .02) {
+            fc.fillStyle = `rgba(31,60,255,${.26 * tw})`; fc.fillRect(x - cs / 2 + 2, y - cs / 2 + 2, cs - 4, cs - 4);
+            fc.strokeStyle = `rgba(143,207,245,${.35 * tw})`; fc.strokeRect(x - cs / 2 + 2.5, y - cs / 2 + 2.5, cs - 5, cs - 5);
+            a += .7 * tw;
+          }
+        }
+        fc.fillStyle = `rgba(150,190,255,${a})`;
+        fc.fillText(c.ch, x, y);
+      }
+      // keep the middle quiet for the words, with a faint cobalt glow
+      let g = fc.createRadialGradient(cx, cy, 0, cx, cy, Math.max(W, H) * .42);
+      g.addColorStop(0, 'rgba(3,4,10,.86)'); g.addColorStop(.6, 'rgba(3,4,10,.5)'); g.addColorStop(1, 'rgba(3,4,10,0)');
+      fc.fillStyle = g; fc.fillRect(0, 0, W, H);
+      g = fc.createRadialGradient(cx, cy * .7, 0, cx, cy * .7, Math.max(W, H) * .5);
+      g.addColorStop(0, 'rgba(31,60,255,.16)'); g.addColorStop(1, 'rgba(31,60,255,0)');
+      fc.fillStyle = g; fc.fillRect(0, 0, W, H);
+    }
+    size();
+    let raf = 0, vis = false, last = 0;
+    const t0 = performance.now();
+    function loop(n) {
+      if (n - last > 90) {
+        last = n;
+        for (let k = 0; k < cells.length * .012; k++) cells[Math.random() * cells.length | 0].ch = pick();
+        draw((n - t0) / 1000);
+      }
+      raf = vis ? requestAnimationFrame(loop) : 0;
+    }
+    draw(1.2);
+    if (!reduce) new IntersectionObserver(([e]) => { vis = e.isIntersecting; if (vis && !raf) raf = requestAnimationFrame(loop); }).observe(fv);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => draw((performance.now() - t0) / 1000));
+    let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { size(); draw((performance.now() - t0) / 1000); }, 150); });
+  })();
+  /* ── pixel terrain: isometric voxel columns, a stair lane rising to a lit gate ── */
+  (() => {
+    const tv = document.getElementById('terrain');
+    const tc = tv.getContext('2d');
+    const base = document.createElement('canvas'), bc = base.getContext('2d');
+    const stepLabel = document.getElementById('stepCount');
+    let W = 0, H = 0, D = 1, A = 7, TOPS = null, LIT = null, N = 0, gate = null, motes = [], twinkles = [];
+    const hash = (x, y) => { const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); };
+    const vn = (x, y) => {
+      const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi, u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+      const a = hash(xi, yi), b = hash(xi + 1, yi), c = hash(xi, yi + 1), d = hash(xi + 1, yi + 1);
+      return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+    };
+    const fbm = (x, y) => vn(x, y) * .55 + vn(x * 2.07, y * 2.07) * .3 + vn(x * 4.3, y * 4.3) * .15;
+    // palette ramp: deep royal -> electric -> icy
+    const ramp = k => {
+      k = Math.max(0, Math.min(1, k));
+      const s = [[8, 14, 60], [12, 35, 179], [31, 60, 255], [88, 140, 240], [143, 207, 245], [214, 240, 252]];
+      const f = k * (s.length - 1), i = Math.min(s.length - 2, Math.floor(f)), t = f - i;
+      return s[i].map((c, j) => c + (s[i + 1][j] - c) * t);
+    };
+    const rgb = (c, m) => `rgb(${c[0] * m | 0},${c[1] * m | 0},${c[2] * m | 0})`;
+
+    function build() {
+      const r = tv.getBoundingClientRect();
+      D = Math.min(2, window.devicePixelRatio || 1);
+      W = Math.max(1, r.width); H = Math.max(1, r.height);
+      tv.width = base.width = Math.round(W * D); tv.height = base.height = Math.round(H * D);
+      A = W < 640 ? 5.5 : 7;
+      const B = A / 2, Hl = A * .82, ZMAX = 13;
+      const E = Math.ceil(W / 2 / A) + 3;
+      const Dmax = Math.ceil((H + ZMAX * Hl) / B) + 2;
+      const cx = W / 2, top = -ZMAX * Hl * .35;
+      // stair lane: from the front edge up to a landing about a third of the way down
+      const dFront = Math.round((H - top) / B) - 3;
+      const span = Math.round(H * .6 / (B + Hl / 2));
+      const dTop = dFront - span, zTop = Math.round(span / 2) + 1;
+      const steps = Math.round(span / 2);
+      const gy0 = top + dTop * B - zTop * Hl;
+      stepLabel.textContent = `STEP ${String(steps).padStart(2, '0')} / ${String(steps).padStart(2, '0')} → CORE`;
+      bc.setTransform(D, 0, 0, D, 0, 0); bc.clearRect(0, 0, W, H);
+      const tops = [], lit = [];
+      for (let d = 0; d <= Dmax; d++) {
+        const fade = .22 + .78 * Math.min(1, Math.pow(d / (Dmax * .55), 1.2));
+        const buckets = new Map();
+        const lines = new Path2D(), edges = new Path2D();
+        for (let e = -E; e <= E; e++) {
+          if ((d + e) & 1) continue;
+          const sx = cx + e * A, sy = top + d * B;
+          if (sx < -A * 2 || sx > W + A * 2) continue;
+          const depth = 1 - d / Dmax, ae = Math.abs(e);
+          const n = fbm(e * .085 + 31.7, d * .085 + 7.3);
+          let z = Math.floor(Math.pow(n, 1.7) * ZMAX * (.2 + 1.0 * depth)) + 1;
+          let stair = false;
+          if (d >= dTop - 5 && d <= dFront + 6) {
+            const sz = d <= dTop ? zTop : Math.max(1, zTop - Math.ceil((d - dTop) / 2));
+            if (ae <= 2) { z = sz; stair = true; }
+            else if (ae <= 6) z = Math.min(z, Math.max(0, sz - 1 - (ae - 3)));
+          }
+          const ty = sy - z * Hl;
+          if (ty - B > H || sy + B < -4) continue;
+          const tex = hash(e * 1.7, d * 2.3);
+          const lf = .3 + .7 * Math.exp(-(((sx - cx) / (W * .34)) ** 2 + ((ty - gy0) / (H * .85)) ** 2));
+          let k = stair ? .66 + .1 * tex : ((z / ZMAX) * .58 + .04 + .12 * tex) * lf;
+          const q = Math.round(k * 28) / 28;
+          const key = (stair ? 's' : 't') + q;
+          if (!buckets.has(key)) buckets.set(key, { q, stair, top: new Path2D(), left: new Path2D(), right: new Path2D() });
+          const bk = buckets.get(key);
+          // left / right faces of the column, then the top diamond
+          if (z > 0) {
+            bk.left.moveTo(sx - A, ty); bk.left.lineTo(sx, ty + B); bk.left.lineTo(sx, sy + B); bk.left.lineTo(sx - A, sy); bk.left.closePath();
+            bk.right.moveTo(sx, ty + B); bk.right.lineTo(sx + A, ty); bk.right.lineTo(sx + A, sy); bk.right.lineTo(sx, sy + B); bk.right.closePath();
+            for (let l = 1; l < z; l++) {
+              const ly = sy - l * Hl;
+              lines.moveTo(sx - A, ly); lines.lineTo(sx, ly + B); lines.lineTo(sx + A, ly);
+            }
+          }
+          bk.top.moveTo(sx, ty - B); bk.top.lineTo(sx + A, ty); bk.top.lineTo(sx, ty + B); bk.top.lineTo(sx - A, ty); bk.top.closePath();
+          edges.moveTo(sx - A, ty); edges.lineTo(sx, ty - B); edges.lineTo(sx + A, ty);
+          tops.push(sx, ty, d, e, stair ? 1 : 0, z);
+          if (stair && d === dTop) gate = { x: cx, y: ty, A, B, Hl };
+        }
+        for (const bk of buckets.values()) {
+          const c = ramp(bk.q);
+          bc.fillStyle = rgb(c, .5 * fade); bc.fill(bk.left);
+          bc.fillStyle = rgb(c, .3 * fade); bc.fill(bk.right);
+          bc.fillStyle = rgb(c, (bk.stair ? 1.0 : .9) * fade); bc.fill(bk.top);
+        }
+        bc.lineWidth = 1 / D;
+        bc.strokeStyle = `rgba(2,4,14,${.55 * fade})`; bc.stroke(lines);
+        bc.strokeStyle = `rgba(160,215,255,${.32 * fade})`; bc.stroke(edges);
+      }
+      // haze: the far rows dissolve into the page
+      const g = bc.createLinearGradient(0, 0, 0, H * .5);
+      g.addColorStop(0, 'rgba(3,4,10,1)'); g.addColorStop(1, 'rgba(3,4,10,0)');
+      bc.fillStyle = g; bc.fillRect(0, 0, W, H * .5);
+      TOPS = Float32Array.from(tops); N = TOPS.length / 6;
+      LIT = new Path2D();
+      twinkles = Array.from({ length: Math.round(W / 26) }, () => ({ i: (Math.random() * N | 0), f: .4 + Math.random() * 1.2, p: Math.random() * 6.28 }));
+      motes = Array.from({ length: Math.round(W / 16) }, () => spawn(true));
+    }
+    function spawn(any) {
+      const i = Math.random() * N | 0;
+      return { x: TOPS[i * 6], y: TOPS[i * 6 + 1] - (any ? Math.random() * 60 : 0), v: 6 + Math.random() * 18, s: Math.random() < .25 ? 3 : 2, life: 2 + Math.random() * 4, age: any ? Math.random() * 4 : 0, dx: (Math.random() - .5) * 6 };
+    }
+    function diamond(p, x, y, s) { p.moveTo(x, y - s * .5); p.lineTo(x + s, y); p.lineTo(x, y + s * .5); p.lineTo(x - s, y); p.closePath(); }
+    function frame(t, dt) {
+      tc.setTransform(1, 0, 0, 1, 0, 0);
+      tc.drawImage(base, 0, 0);
+      tc.setTransform(D, 0, 0, D, 0, 0);
+      tc.globalCompositeOperation = 'lighter';
+      // a slow wave of light rolling across the tops
+      const wave = new Path2D(), ph = t * 9;
+      for (let i = 0; i < N; i++) {
+        const d = TOPS[i * 6 + 2], e = TOPS[i * 6 + 3];
+        const m = ((d * .9 - e * .45 - ph) % 70 + 70) % 70;
+        if (m < 3.2) diamond(wave, TOPS[i * 6], TOPS[i * 6 + 1], A);
+      }
+      tc.fillStyle = 'rgba(80,140,255,.22)'; tc.fill(wave);
+      // twinkling voxels
+      for (const w of twinkles) {
+        const a = Math.pow(Math.max(0, Math.sin(t * w.f + w.p)), 10);
+        if (a < .02) continue;
+        const x = TOPS[w.i * 6], y = TOPS[w.i * 6 + 1];
+        const p = new Path2D(); diamond(p, x, y, A);
+        tc.fillStyle = `rgba(160,220,255,${.75 * a})`; tc.fill(p);
+        tc.fillStyle = `rgba(230,246,255,${.8 * a})`; tc.fillRect(x - .5, y - A * 1.6, 1, A * 3.2); tc.fillRect(x - A * 1.6, y - .5, A * 3.2, 1);
+      }
+      // the stair lane glows faintly, step by step toward the gate
+      if (gate) {
+        const pulse = .5 + .5 * Math.sin(t * 1.6);
+        const gw = gate.A * 5.2, gh = gate.Hl * 9.5, gx = gate.x, gy = gate.y;
+        let g = tc.createRadialGradient(gx, gy - gh * .5, 2, gx, gy - gh * .5, gh * 1.6);
+        g.addColorStop(0, `rgba(80,130,255,${.32 + .18 * pulse})`); g.addColorStop(1, 'rgba(31,60,255,0)');
+        tc.fillStyle = g; tc.fillRect(gx - gh * 1.7, gy - gh * 2.2, gh * 3.4, gh * 3.4);
+        g = tc.createLinearGradient(0, gy - gh, 0, gy);
+        g.addColorStop(0, 'rgba(143,207,245,.08)'); g.addColorStop(1, `rgba(143,207,245,${.3 + .15 * pulse})`);
+        tc.fillStyle = g; tc.fillRect(gx - gw / 2, gy - gh, gw, gh);
+        tc.strokeStyle = `rgba(214,240,252,${.7 + .3 * pulse})`; tc.lineWidth = 1.4;
+        tc.strokeRect(Math.round(gx - gw / 2) + .5, Math.round(gy - gh) + .5, Math.round(gw), Math.round(gh));
+        // signal beam
+        g = tc.createLinearGradient(0, 0, 0, gy - gh);
+        g.addColorStop(0, 'rgba(143,207,245,0)'); g.addColorStop(1, `rgba(143,207,245,${.18 + .1 * pulse})`);
+        tc.fillStyle = g; tc.fillRect(gx - .75, 0, 1.5, gy - gh);
+        // the core star
+        const sx = gx, sy = gy - gh * .55, s = 4 + 2.5 * pulse;
+        g = tc.createRadialGradient(sx, sy, 0, sx, sy, s * 3);
+        g.addColorStop(0, 'rgba(240,250,255,.95)'); g.addColorStop(.3, 'rgba(143,207,245,.5)'); g.addColorStop(1, 'rgba(31,60,255,0)');
+        tc.fillStyle = g; tc.beginPath(); tc.arc(sx, sy, s * 3, 0, 6.283); tc.fill();
+        tc.fillStyle = 'rgba(235,248,255,.95)';
+        tc.fillRect(sx - s * 3.2, sy - .6, s * 6.4, 1.2); tc.fillRect(sx - .6, sy - s * 3.2, 1.2, s * 6.4);
+      }
+      // loose pixels drifting up and dissolving
+      for (const m of motes) {
+        m.age += dt; m.y -= m.v * dt; m.x += m.dx * dt;
+        if (m.age > m.life) Object.assign(m, spawn(false));
+        const a = Math.sin(Math.PI * m.age / m.life);
+        tc.fillStyle = `rgba(143,207,245,${.55 * a})`;
+        tc.fillRect(Math.round(m.x), Math.round(m.y), m.s, m.s);
+      }
+      // scan line
+      const sy2 = ((t % 7) / 7) * (H + 40) - 20;
+      const sg = tc.createLinearGradient(0, sy2 - 26, 0, sy2);
+      sg.addColorStop(0, 'rgba(31,60,255,0)'); sg.addColorStop(1, 'rgba(120,180,255,.16)');
+      tc.fillStyle = sg; tc.fillRect(0, sy2 - 26, W, 26);
+      tc.fillStyle = 'rgba(200,230,255,.28)'; tc.fillRect(0, sy2, W, 1);
+      tc.globalCompositeOperation = 'source-over';
+    }
+    build();
+    let raf = 0, visible = false, last = performance.now();
+    const t0 = performance.now();
+    function loop(now) {
+      const dt = Math.min(.1, (now - last) / 1000);
+      if (now - last >= 32) { frame((now - t0) / 1000, dt); last = now; }
+      raf = visible ? requestAnimationFrame(loop) : 0;
+    }
+    if (reduce) frame(1.5, 0);
+    else {
+      frame(0, 0);
+      new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible && !raf) { last = performance.now(); raf = requestAnimationFrame(loop); } }).observe(tv);
+    }
+    let rt2; addEventListener('resize', () => { clearTimeout(rt2); rt2 = setTimeout(() => { build(); frame((performance.now() - t0) / 1000, 0); }, 150); });
+  })();
+})();
+</script>
+</body>
+</html>
