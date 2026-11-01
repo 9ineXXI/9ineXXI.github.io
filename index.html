@@ -306,6 +306,140 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
 .lb-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .2em; color: var(--mist); }
 .lb-close { font: inherit; letter-spacing: .24em; background: transparent; color: var(--ink); border: 1px solid var(--line-strong); padding: 6px 12px; cursor: pointer; }
 
+
+/* ── screening: a 3:4 stage with HUD corners | info, chapters, transport | a playlist reel ── */
+.cine { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); grid-template-areas: "st cp" "rl rl"; }
+.stage { grid-area: st; position: relative; aspect-ratio: 3 / 4; background: #010207; overflow: hidden; border-right: 1px solid var(--rule); }
+.stage video, .cfx { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; }
+.stage video { transition: filter .5s, opacity .5s; }
+.stage.decoding video { filter: blur(6px) brightness(1.6) saturate(.6); opacity: .65; }
+.cfx { pointer-events: none; z-index: 2; }
+.st-scan { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(3, 4, 10, .16) 0 1px, transparent 1px 3px); mix-blend-mode: multiply; }
+.st-c { position: absolute; z-index: 3; width: 22px; height: 22px; border: 1px solid var(--ink); pointer-events: none; opacity: .85; }
+.st-c.tl { top: 12px; left: 12px; border-width: 1px 0 0 1px; } .st-c.tr { top: 12px; right: 12px; border-width: 1px 1px 0 0; }
+.st-c.bl { bottom: 12px; left: 12px; border-width: 0 0 1px 1px; } .st-c.br { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
+.st-lab { position: absolute; z-index: 3; top: 18px; display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono); font-size: 10.5px; line-height: 1.4; letter-spacing: .2em; padding: 3px 8px 2px; color: var(--ink); background: rgba(3, 4, 10, .66); border: 1px solid var(--line-strong); pointer-events: none; }
+.st-lab.l { left: 42px; } .st-lab.r { right: 42px; font-variant-numeric: tabular-nums; }
+.rec { width: 6px; height: 6px; border-radius: 50%; background: var(--glow); box-shadow: 0 0 8px var(--cobalt); animation: blink 1.2s steps(2, jump-none) infinite; }
+.stage.paused .rec { animation: none; opacity: .35; }
+.st-big { position: absolute; z-index: 4; left: 50%; top: 50%; width: 76px; height: 76px; margin: -38px 0 0 -38px; display: grid; place-items: center; border: 1px solid var(--ink); background: rgba(3, 4, 10, .55); color: var(--ink); cursor: pointer;
+  opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s, box-shadow .25s; transform: scale(.9); box-shadow: 0 0 30px rgba(31, 60, 255, .5); }
+.st-big svg { width: 28px; height: 28px; fill: currentColor; margin-left: 4px; }
+.stage.paused .st-big { opacity: 1; pointer-events: auto; transform: none; }
+.st-big:hover { box-shadow: 0 0 40px rgba(31, 60, 255, .9); background: rgba(31, 60, 255, .3); }
+.st-nav { position: absolute; z-index: 4; top: 50%; width: 38px; height: 64px; margin-top: -32px; display: grid; place-items: center; font: 400 26px/1 var(--f-mono); color: var(--ink);
+  background: rgba(3, 4, 10, .55); border: 1px solid var(--line-strong); cursor: pointer; opacity: 0; transition: opacity .2s, background .2s, border-color .2s; }
+.st-nav.p { left: 12px; } .st-nav.n { right: 12px; }
+.stage:hover .st-nav, .st-nav:focus-visible { opacity: 1; }
+.st-nav:hover { background: rgba(31, 60, 255, .35); border-color: var(--glow); }
+@media (hover: none) { .st-nav { opacity: .8; } }
+
+.cpanel { grid-area: cp; display: flex; flex-direction: column; gap: 14px; min-width: 0; padding: clamp(26px, 3.4vw, 44px) var(--pad); }
+.cp-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.cp-no { margin: 0; font-family: var(--f-mono); font-size: 12px; letter-spacing: .3em; color: var(--mist); }
+.cp-no b { font-weight: 400; color: var(--glow); }
+.cp-ver { font-size: 12px; letter-spacing: .16em; color: var(--ink); padding: 4px 10px 3px; border: 1px solid var(--line-strong); white-space: nowrap; }
+.cp-ver.neon { border-color: #ff4fb8; color: #ffd2f0; box-shadow: 0 0 14px rgba(255, 60, 180, .35), inset 0 0 10px rgba(0, 200, 255, .2); }
+.cp-t { margin: 4px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.cp-t .cn { font-family: var(--f-cn-display); font-weight: 600; font-size: clamp(34px, 3.8vw, 52px); line-height: 1.15; letter-spacing: .12em; text-shadow: 0 0 22px rgba(31, 60, 255, .8); }
+.cp-t .lat { font-family: var(--f-lat-display); font-size: clamp(14px, 1.3vw, 17px); letter-spacing: .24em; color: var(--glow); }
+.cp-meta { margin: -4px 0 0; font-family: var(--f-mono); font-size: 11px; letter-spacing: .22em; color: var(--dim); }
+.cp-d { margin: 0; max-width: 32em; color: var(--mist); text-wrap: pretty; min-height: 3.6em; }
+.cp-h { margin: 6px 0 -4px; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .3em; color: var(--dim); }
+.chap { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+.chap button { width: 100%; font: inherit; display: flex; align-items: center; gap: 10px; padding: 9px 11px; text-align: left; color: var(--mist); background: rgba(6, 10, 29, .5); border: 1px solid var(--rule); cursor: pointer; position: relative; overflow: hidden; transition: color .2s, border-color .2s, background .2s; }
+.chap button::before { content: ""; position: absolute; inset: 0 auto 0 0; width: var(--cp, 0%); background: linear-gradient(90deg, rgba(31, 60, 255, .28), rgba(31, 60, 255, .1)); pointer-events: none; }
+.chap b { position: relative; font-family: var(--f-mono); font-weight: 400; font-size: 10.5px; letter-spacing: .1em; color: var(--dim); }
+.chap span { position: relative; flex: 1; min-width: 0; font-size: 13.5px; letter-spacing: .14em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chap em { position: relative; font-style: normal; font-family: var(--f-mono); font-size: 10.5px; color: var(--dim); }
+.chap button:hover { color: var(--ink); border-color: var(--line-strong); }
+.chap button[aria-current="true"] { color: var(--ink); border-color: var(--glow); box-shadow: 0 0 16px rgba(31, 60, 255, .3); }
+.chap button[aria-current="true"] b { color: var(--glow); }
+.ctrl { margin-top: auto; display: flex; align-items: center; gap: 10px; padding-top: 14px; border-top: 1px solid var(--rule); }
+.cbtn { font: inherit; flex: none; display: grid; place-items: center; height: 36px; min-width: 36px; padding: 0; color: var(--ink); background: rgba(3, 4, 10, .5); border: 1px solid var(--line-strong); cursor: pointer; transition: background .2s, border-color .2s, color .2s; }
+.cbtn svg { width: 18px; height: 18px; fill: currentColor; stroke: currentColor; stroke-width: 0; }
+.cbtn:hover { border-color: var(--glow); background: rgba(31, 60, 255, .2); }
+.cbtn.txt { padding: 0 12px; font-family: var(--f-mono); font-size: 11px; letter-spacing: .16em; white-space: nowrap; }
+.cbtn.txt[aria-pressed="false"] { color: var(--dim); }
+#cPlay .i-play, #cPlay.off .i-pause { display: none; } #cPlay.off .i-play { display: inline; }
+#cMute .i-off, #cMute .i-on { fill: none; stroke-width: 1.6; stroke-linecap: square; }
+#cMute .i-on, #cMute[aria-pressed="true"] .i-off { display: none; } #cMute[aria-pressed="true"] .i-on { display: inline; }
+#cMute[aria-pressed="false"] { color: var(--glow); box-shadow: 0 0 0 0 rgba(31, 60, 255, .6); animation: ping 2.4s ease-out infinite; }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(80, 130, 255, .55); } 70%, 100% { box-shadow: 0 0 0 9px rgba(80, 130, 255, 0); } }
+.seek { position: relative; flex: 1; min-width: 60px; height: 36px; cursor: pointer; touch-action: none; }
+.seek::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: rgba(64, 104, 255, .28); }
+.seek-fill { position: absolute; left: 0; top: 50%; height: 2px; margin-top: -1px; width: 0; background: var(--glow); box-shadow: 0 0 10px var(--cobalt); }
+.seek-fill::after { content: ""; position: absolute; right: -5px; top: -4px; width: 10px; height: 10px; background: var(--ink); box-shadow: 0 0 10px var(--cobalt); }
+.seek-ticks i { position: absolute; top: 50%; width: 1px; height: 12px; margin-top: -6px; background: var(--line-strong); }
+.ctime { flex: none; font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; color: var(--mist); font-variant-numeric: tabular-nums; }
+
+.reel-wrap { grid-area: rl; border-top: 1px solid var(--rule); padding: 14px clamp(12px, 1.6vw, 20px) 18px; min-width: 0; }
+.reel-h { display: flex; justify-content: space-between; padding: 0 4px 10px; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .28em; color: var(--dim); }
+.reel-ct { color: var(--glow); }
+.reel-row { display: flex; align-items: stretch; gap: 8px; }
+.rarr { flex: none; width: 30px; font: 400 22px/1 var(--f-mono); color: var(--ink); background: rgba(3, 4, 10, .5); border: 1px solid var(--line); cursor: pointer; }
+.rarr:hover { border-color: var(--glow); background: rgba(31, 60, 255, .2); }
+.reel { list-style: none; margin: 0; padding: 2px; flex: 1; min-width: 0; display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
+.reel::-webkit-scrollbar { display: none; }
+.reel li { flex: 0 0 auto; scroll-snap-align: start; }
+.rcard { font: inherit; width: clamp(196px, 21vw, 232px); display: grid; grid-template-columns: 60px minmax(0, 1fr); gap: 0 12px; padding: 8px; text-align: left; color: var(--mist); background: rgba(6, 10, 29, .55); border: 1px solid var(--rule); cursor: pointer; position: relative; transition: border-color .2s, color .2s, background .2s; }
+.rcard img { grid-row: 1 / 4; width: 60px; height: 80px; object-fit: cover; display: block; filter: saturate(.85) brightness(.85); transition: filter .25s; }
+.rcard .rn { font-family: var(--f-mono); font-size: 10px; letter-spacing: .2em; color: var(--dim); align-self: end; }
+.rcard .rt { font-family: var(--f-cn-display); font-weight: 600; font-size: 15px; letter-spacing: .14em; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rcard .rv { font-size: 11.5px; letter-spacing: .1em; align-self: start; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rcard::after { content: ""; position: absolute; left: -1px; bottom: -1px; height: 2px; width: var(--p, 0%); background: var(--glow); box-shadow: 0 0 8px var(--cobalt); }
+.rcard:hover { border-color: var(--line-strong); color: var(--ink); }
+.rcard:hover img { filter: none; }
+.rcard[aria-current="true"] { border-color: var(--glow); background: rgba(14, 26, 80, .6); box-shadow: 0 0 20px rgba(31, 60, 255, .3); color: var(--ink); }
+.rcard[aria-current="true"] img { filter: none; }
+.rcard[aria-current="true"] .rn { color: var(--glow); }
+
+/* ── gallery: coverflow light-table, caption, thumbnail strip ── */
+.gal { padding-bottom: 6px; }
+.g-tabs { display: flex; flex-wrap: wrap; gap: 6px; padding: 16px clamp(12px, 1.6vw, 20px); border-bottom: 1px solid var(--rule); }
+.g-tab { font: inherit; font-size: 13px; letter-spacing: .12em; padding: 7px 12px; color: var(--mist); background: transparent; border: 1px solid var(--line); cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
+.g-tab em { font-style: normal; font-family: var(--f-mono); font-size: 10.5px; color: var(--dim); margin-left: 4px; }
+.g-tab:hover { color: var(--ink); border-color: var(--line-strong); }
+.g-tab[aria-pressed="true"] { color: #04081a; background: var(--ink); border-color: var(--ink); }
+.g-tab[aria-pressed="true"] em { color: #3a4a80; }
+.g-stage { position: relative; height: clamp(440px, 52vw, 640px); overflow: hidden; perspective: 1400px; touch-action: pan-y; cursor: grab; -webkit-user-select: none; user-select: none; outline: none;
+  background: radial-gradient(60% 70% at 50% 50%, rgba(31, 60, 255, .14), transparent 70%); }
+.g-stage:focus-visible { box-shadow: inset 0 0 0 1px var(--glow); }
+.g-stage.drag { cursor: grabbing; }
+.g-track { position: absolute; inset: 0; transform-style: preserve-3d; }
+.g-card { position: absolute; left: 50%; top: 50%; width: var(--cw); aspect-ratio: 2 / 3; margin: calc(var(--cw) * -.75) 0 0 calc(var(--cw) * -.5); padding: 0; border: 1px solid var(--line); background: var(--deep); cursor: pointer;
+  transition: transform .7s cubic-bezier(.2, .75, .2, 1), opacity .5s, filter .5s, border-color .3s, box-shadow .4s; will-change: transform; }
+.g-stage { --cw: clamp(240px, 27vw, 360px); }
+.g-card img { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
+.g-card::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(3, 4, 10, .14) 0 1px, transparent 1px 3px); pointer-events: none; }
+.g-card.c { border-color: var(--ink); box-shadow: 0 0 0 1px rgba(226, 238, 255, .2), 0 30px 80px rgba(0, 0, 0, .7), 0 0 60px rgba(31, 60, 255, .45); }
+.g-card .gc { position: absolute; z-index: 1; width: 16px; height: 16px; border: 1px solid var(--glow); opacity: 0; transition: opacity .3s; }
+.g-card.c .gc { opacity: 1; }
+.gc.a { top: -9px; left: -9px; border-width: 1px 0 0 1px; } .gc.b { top: -9px; right: -9px; border-width: 1px 1px 0 0; }
+.gc.c2 { bottom: -9px; left: -9px; border-width: 0 0 1px 1px; } .gc.d { bottom: -9px; right: -9px; border-width: 0 1px 1px 0; }
+.g-arr { position: absolute; z-index: 5; top: 50%; width: 44px; height: 72px; margin-top: -36px; display: grid; place-items: center; font: 400 28px/1 var(--f-mono); color: var(--ink); background: rgba(3, 4, 10, .6); border: 1px solid var(--line-strong); cursor: pointer; transition: background .2s, border-color .2s; }
+.g-arr.p { left: 16px; } .g-arr.n { right: 16px; }
+.g-arr:hover { background: rgba(31, 60, 255, .35); border-color: var(--glow); }
+.g-cap { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 16px 24px; padding: 18px var(--pad) 20px; border-top: 1px solid var(--rule); }
+.g-meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 16px; min-width: 0; }
+.g-no { font-family: var(--f-mono); font-size: 12px; letter-spacing: .24em; color: var(--glow); }
+.g-t { display: inline-flex; align-items: baseline; gap: 12px; }
+.g-t b { font-family: var(--f-cn-display); font-weight: 600; font-size: 22px; letter-spacing: .16em; color: var(--ink); }
+.g-t i { font-style: normal; font-family: var(--f-lat-display); font-size: 13px; letter-spacing: .22em; color: var(--mist); }
+.g-d { flex-basis: 100%; color: var(--mist); font-size: 14px; }
+.g-side { display: flex; align-items: center; gap: 8px; flex: none; }
+.g-ct { font-family: var(--f-mono); font-size: 12px; letter-spacing: .16em; color: var(--mist); margin-right: 6px; font-variant-numeric: tabular-nums; }
+.g-prog { position: absolute; left: 0; right: 0; top: -1px; height: 2px; overflow: hidden; }
+.g-prog i { display: block; height: 100%; width: 0; background: var(--glow); box-shadow: 0 0 8px var(--cobalt); }
+.g-strip { list-style: none; margin: 0; padding: 0 var(--pad) 16px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.g-strip::-webkit-scrollbar { display: none; }
+.g-strip button { display: block; width: 52px; height: 78px; padding: 0; border: 1px solid var(--rule); background: var(--deep); cursor: pointer; opacity: .5; transition: opacity .2s, border-color .2s, transform .2s; }
+.g-strip img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.g-strip button:hover { opacity: .85; }
+.g-strip button[aria-current="true"] { opacity: 1; border-color: var(--glow); transform: translateY(-3px); box-shadow: 0 0 12px rgba(31, 60, 255, .5); }
+.lb-btns { display: flex; gap: 8px; }
+.lb-nav[hidden] { display: none; }
+
 @media (max-width: 1000px) {
   .chans { grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(100%, 620px); }
 }
@@ -351,6 +485,22 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
   .cid { font-size: 14px; }
   .go { margin-top: 6px; letter-spacing: .08em; }
 }
+@media (max-width: 860px) {
+  .cine { grid-template-columns: minmax(0, 1fr); grid-template-areas: "st" "cp" "rl"; }
+  .stage { border-right: 0; border-bottom: 1px solid var(--rule); max-height: 82vh; aspect-ratio: auto; height: min(133.33vw, 82vh); }
+  .cpanel { padding-block: 22px 18px; }
+  .g-stage { --cw: clamp(200px, 52vw, 300px); height: clamp(380px, 95vw, 520px); }
+  .g-cap { flex-wrap: wrap; }
+}
+@media (max-width: 520px) {
+  .st-lab.l { left: 38px; } .st-lab.r { right: 38px; }
+  .chap { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ctrl { gap: 6px; } .cbtn.txt { padding: 0 8px; font-size: 10px; letter-spacing: .08em; }
+  .ctime { display: none; }
+  .g-stage { --cw: 58vw; height: 98vw; }
+  .g-arr { width: 34px; height: 56px; margin-top: -28px; } .g-arr.p { left: 6px; } .g-arr.n { right: 6px; }
+  .g-side { width: 100%; justify-content: space-between; }
+}
 </style>
 </head>
 <body>
@@ -366,12 +516,14 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
     <a class="brand" href="#top" aria-label="星核 STAR CORE，回到顶部"><i class="spark" aria-hidden="true"></i><b>星核</b><span class="sl">/</span><span class="px">STAR CORE</span><span class="kbd">SIG·006</span></a>
     <nav class="nav" aria-label="主导航">
       <a href="#works"><em>01</em>信号</a>
-      <a href="#process"><em>02</em>工序</a>
-      <a href="#manifesto"><em>03</em>宣言</a>
-      <a href="#channels"><em>04</em>频道</a>
+      <a href="#screening"><em>02</em>放映</a>
+      <a href="#gallery"><em>03</em>画廊</a>
+      <a href="#process"><em>04</em>工序</a>
+      <a href="#manifesto"><em>05</em>宣言</a>
+      <a href="#channels"><em>06</em>频道</a>
     </nav>
     <div class="bar-cta">
-      <button class="btn sm fill" type="button" data-open-n="002">最新信号 <span class="ar" aria-hidden="true">▶</span></button>
+      <a class="btn sm fill" href="#screening">最新放映 <span class="ar" aria-hidden="true">▶</span></a>
       <a class="btn sm ghost" href="#channels">关注 <span class="ar" aria-hidden="true">↗</span></a>
     </div>
   </div>
@@ -498,11 +650,104 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
 
 <div class="row hatch" aria-hidden="true"><div class="wrap"></div></div>
 
+<section class="row" id="screening" aria-labelledby="h-scr">
+  <div class="wrap">
+    <div class="head r">
+      <div>
+        <p class="eyebrow"><span class="n">02</span><span class="k">放映</span><span class="e">SCREENING</span></p>
+        <h2 class="h2" id="h-scr">信号，<br>正在放映。</h2>
+      </div>
+      <div><p>TRANSMISSION 系列的动态成片。会自动连播；点章节跳到那一段，点右下角打开声音，效果更好。</p></div>
+    </div>
+    <div class="cine r" id="cine">
+      <div class="stage" id="stage">
+        <video id="cv" playsinline muted preload="metadata" aria-label="正在放映的作品"></video>
+        <canvas class="cfx" id="cfx" aria-hidden="true"></canvas>
+        <span class="st-scan" aria-hidden="true"></span>
+        <span class="st-c tl" aria-hidden="true"></span><span class="st-c tr" aria-hidden="true"></span><span class="st-c bl" aria-hidden="true"></span><span class="st-c br" aria-hidden="true"></span>
+        <button class="st-big" id="stBig" type="button" aria-label="播放"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg></button>
+        <button class="st-nav p" id="stPrev" type="button" aria-label="上一部"><span aria-hidden="true">‹</span></button>
+        <button class="st-nav n" id="stNext" type="button" aria-label="下一部"><span aria-hidden="true">›</span></button>
+      </div>
+      <div class="cpanel">
+        <div class="cp-top">
+          <p class="cp-no">TRANSMISSION / <b id="cNo">003</b></p>
+          <span class="cp-ver" id="cVer">代码字符版</span>
+        </div>
+        <h3 class="cp-t"><span class="cn" id="cCn">零号城</span><span class="lat" id="cLat">CITY ZERO</span></h3>
+        <p class="cp-meta" id="cMeta">35S · 3:4 · 配乐</p>
+        <p class="cp-d" id="cDesc"></p>
+        <p class="cp-h">章节 · CHAPTERS</p>
+        <ol class="chap" id="chap"></ol>
+        <div class="ctrl">
+          <button class="cbtn" id="cPlay" type="button" aria-label="暂停"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/><path class="i-play" d="M8 5.5v13l11-6.5z"/></svg></button>
+          <div class="seek" id="seek" role="slider" tabindex="0" aria-label="播放进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="seek-fill" id="seekFill"></span><span class="seek-ticks" id="seekTicks"></span></div>
+          <span class="ctime" id="cTime">00:00 / 00:35</span>
+          <button class="cbtn" id="cMute" type="button" aria-label="打开声音" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="i-off" d="M15.5 9.5l5 5M20.5 9.5l-5 5"/><path class="i-on" d="M15.5 9a4.5 4.5 0 0 1 0 6M17.8 6.6a8 8 0 0 1 0 10.8"/></svg></button>
+          <button class="cbtn txt" id="cAuto" type="button" aria-pressed="true">连播 ON</button>
+        </div>
+      </div>
+      <div class="reel-wrap">
+        <div class="reel-h"><span>放映单 · PLAYLIST</span><span class="reel-ct" id="reelCt">01 / 05</span></div>
+        <div class="reel-row">
+          <button class="rarr" id="reelPrev" type="button" aria-label="向左滚动放映单">‹</button>
+          <ol class="reel" id="reel"></ol>
+          <button class="rarr" id="reelNext" type="button" aria-label="向右滚动放映单">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="row hatch" aria-hidden="true"><div class="wrap"></div></div>
+
+<section class="row" id="gallery" aria-labelledby="h-gal">
+  <div class="wrap">
+    <div class="head r">
+      <div>
+        <p class="eyebrow"><span class="n">03</span><span class="k">画廊</span><span class="e">GALLERY</span></p>
+        <h2 class="h2" id="h-gal">每一帧，<br>都是一张星图。</h2>
+      </div>
+      <div><p>成片背后的关键帧和海报。左右拖动或按方向键翻看，点中间那张看大图。</p></div>
+    </div>
+    <div class="gal r" id="gal">
+      <div class="g-tabs" role="group" aria-label="筛选画廊">
+        <button class="g-tab" type="button" data-set="all" aria-pressed="true">全部 <em>13</em></button>
+        <button class="g-tab" type="button" data-set="003" aria-pressed="false">TX.003 零号城 <em>6</em></button>
+        <button class="g-tab" type="button" data-set="002" aria-pressed="false">TX.002 深空日志 <em>6</em></button>
+        <button class="g-tab" type="button" data-set="001" aria-pressed="false">TX.001 星核 <em>1</em></button>
+      </div>
+      <div class="g-stage" id="gStage" tabindex="0" aria-roledescription="轮播" aria-label="画廊，用左右方向键切换">
+        <div class="g-track" id="gTrack"></div>
+        <button class="g-arr p" id="gPrev" type="button" aria-label="上一张"><span aria-hidden="true">‹</span></button>
+        <button class="g-arr n" id="gNext" type="button" aria-label="下一张"><span aria-hidden="true">›</span></button>
+      </div>
+      <div class="g-cap">
+        <div class="g-meta">
+          <span class="g-no" id="gNo">003·01</span>
+          <span class="g-t"><b id="gCn">零号城</b><i id="gEn">CITY ZERO</i></span>
+          <span class="g-d" id="gDesc"></span>
+        </div>
+        <div class="g-side">
+          <span class="g-ct" id="gCt">01 / 13</span>
+          <button class="cbtn txt" id="gAuto" type="button" aria-pressed="true">自动 ON</button>
+          <button class="cbtn txt" id="gOpen" type="button">↗ 大图</button>
+        </div>
+        <span class="g-prog" aria-hidden="true"><i id="gProg"></i></span>
+      </div>
+      <ol class="g-strip" id="gStrip" aria-label="缩略图"></ol>
+    </div>
+  </div>
+</section>
+
+
+<div class="row hatch" aria-hidden="true"><div class="wrap"></div></div>
+
 <section class="row" id="process" aria-labelledby="h-process">
   <div class="wrap">
     <div class="head r">
       <div>
-        <p class="eyebrow"><span class="n">02</span><span class="k">工序</span><span class="e">PROCESS</span></p>
+        <p class="eyebrow"><span class="n">04</span><span class="k">工序</span><span class="e">PROCESS</span></p>
         <h2 class="h2" id="h-process">从一张画，<br>到一束信号。</h2>
       </div>
       <div><p>画面交给 AI，动效交给代码。视频里的每一帧，都是一行行代码算出来的。</p></div>
@@ -521,7 +766,7 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
   <div class="wrap">
     <div class="head r">
       <div>
-        <p class="eyebrow"><span class="n">03</span><span class="k">宣言</span><span class="e">MANIFESTO</span></p>
+        <p class="eyebrow"><span class="n">05</span><span class="k">宣言</span><span class="e">MANIFESTO</span></p>
         <h2 class="h2" id="h-mani">一束光，<br>走了上万年。</h2>
       </div>
       <div><p>一束光从恒星的核心出发，要在星体内部辗转上万年，才能抵达表面。</p></div>
@@ -557,7 +802,7 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
   <div class="wrap call">
     <canvas id="field" aria-hidden="true"></canvas>
     <div class="call-in">
-      <p class="eyebrow"><span class="n">04</span><span class="k">频道</span><span class="e">FREQUENCY</span></p>
+      <p class="eyebrow"><span class="n">06</span><span class="k">频道</span><span class="e">FREQUENCY</span></p>
       <h2 class="h2" id="h-chan">下一束信号，正在路上。</h2>
       <p>四个频道同步更新，点名字就能找到星核。</p>
       <ul class="chans">
@@ -585,9 +830,11 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
         <p class="fh">目录 · INDEX</p>
         <ul class="flist">
           <li><a href="#works"><em>01</em>信号</a></li>
-          <li><a href="#process"><em>02</em>工序</a></li>
-          <li><a href="#manifesto"><em>03</em>宣言</a></li>
-          <li><a href="#channels"><em>04</em>频道</a></li>
+          <li><a href="#screening"><em>02</em>放映</a></li>
+          <li><a href="#gallery"><em>03</em>画廊</a></li>
+          <li><a href="#process"><em>04</em>工序</a></li>
+          <li><a href="#manifesto"><em>05</em>宣言</a></li>
+          <li><a href="#channels"><em>06</em>频道</a></li>
         </ul>
       </div>
       <div>
@@ -617,7 +864,7 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
 <dialog class="lb" id="lb" aria-label="作品大图">
   <div class="lb-inner">
     <div class="lb-media" id="lbMedia"></div>
-    <div class="lb-bar"><span id="lbTitle"></span><button class="lb-close" id="lbClose" type="button">关闭</button></div>
+    <div class="lb-bar"><span id="lbTitle"></span><span class="lb-btns"><button class="lb-close lb-nav" id="lbPrev" type="button" hidden>‹ 上一张</button><button class="lb-close lb-nav" id="lbNext" type="button" hidden>下一张 ›</button><button class="lb-close" id="lbClose" type="button">关闭</button></span></div>
   </div>
 </dialog>
 <script>
@@ -1189,6 +1436,319 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
       new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible && !raf) { last = performance.now(); raf = requestAnimationFrame(loop); } }).observe(tv);
     }
     let rt2; addEventListener('resize', () => { clearTimeout(rt2); rt2 = setTimeout(() => { build(); frame((performance.now() - t0) / 1000, 0); }, 150); });
+  })();
+
+  /* ── screening: playlist player. Switching works breaks the last frame into falling pixel columns ── */
+  (() => {
+    const $ = id => document.getElementById(id);
+    const VIDS = [
+      { id: 't003', no: '003', cn: '零号城', lat: 'CITY ZERO', ver: '代码字符版', dur: 35, meta: '35S · 3:4 · 代码字符 · 配乐',
+        d: '一座雨夜里永不入睡的巨构城市。每一帧由约 22,000 个代码字符实时拼成：窗户明灭，水洼泛起涟漪，列车拖出速度线。',
+        ch: [[0, '零号城'], [6.5, '街区'], [12.5, '高架'], [18.5, '义体'], [24.5, '核心'], [29, '星核']] },
+      { id: 't003c', no: '003', cn: '零号城', lat: 'CITY ZERO', ver: '彩色霓虹版', neon: true, dur: 35, meta: '35S · 3:4 · 代码字符 · 霓虹配色',
+        d: '同一座城，换一种霓虹。洋红与青色在字符间流动，琥珀金点亮飞行器的尾灯、水面的涟漪和最后升起的星核。',
+        ch: [[0, '零号城'], [6.5, '街区'], [12.5, '高架'], [18.5, '义体'], [24.5, '核心'], [29, '星核']] },
+      { id: 't002', no: '002', cn: '深空日志', lat: 'DEEP FIELD LOG', ver: 'AI 关键帧版', dur: 35, meta: '35S · 3:4 · AI 画面 × 代码动效 · 配乐',
+        d: '一艘环形飞船启航、跃迁、穿过虫洞，在黑洞边缘看见时间弯曲：飞船上过了几秒，地球上已过去几十年。',
+        ch: [[0, '启航'], [6.5, '跃迁'], [12.5, '虫洞'], [19.5, '事件视界'], [28, '星核']] },
+      { id: 't002code', no: '002', cn: '深空日志', lat: 'DEEP FIELD LOG', ver: '代码绘制版', dur: 35, meta: '35S · 3:4 · 纯代码绘制 · 配乐',
+        d: '同一段航程，全部用代码画出来：网点构成的飞船、像素化的星流、被引力弯折的吸积盘，最后坍缩成一颗星核。',
+        ch: [[0, '启航'], [6.5, '跃迁'], [12.5, '虫洞'], [19.5, '事件视界'], [28, '星核']] },
+      { id: 't001', no: '001', cn: '星核', lat: 'STAR CORE', ver: '动态海报', dur: 15, meta: '15S · 3:4 · 代码动效 · 音效',
+        d: '截获一段来自星核的信号：扫描线逐行显影，轨道一条条画出，月相依次点亮，名字在故障里显现。',
+        ch: [[0, '接收信号'], [1.2, '扫描成像'], [2.6, '系统上线'], [6.4, '月相'], [9.4, '揭晓']] },
+    ];
+    const stage = $('stage'), cv = $('cv'), cfx = $('cfx'), fx = cfx.getContext('2d');
+    const reel = $('reel'), chap = $('chap'), seek = $('seek'), fill = $('seekFill'), ticks = $('seekTicks');
+    const cPlay = $('cPlay'), cMute = $('cMute'), cAuto = $('cAuto');
+    const pad = n => String(n).padStart(2, '0');
+    const fmt = t => `${pad(Math.floor(t / 60))}:${pad(Math.floor(t % 60))}`;
+    let cur = -1, autoNext = true, userPaused = reduce, visible = false, raf = 0, fallRaf = 0;
+
+    VIDS.forEach((v, i) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<button class="rcard" type="button" data-i="${i}" aria-label="放映 TRANSMISSION ${v.no} ${v.cn} ${v.ver}"><img src="media/tx/thumb/${v.id}.jpg" alt="" width="60" height="80" loading="lazy"><span class="rn">TX / ${v.no}</span><span class="rt">${v.cn}</span><span class="rv">${v.ver} · ${v.dur}S</span></button>`;
+      reel.append(li);
+    });
+    const cards = [...reel.querySelectorAll('.rcard')];
+
+    // the outgoing frame falls apart in columns, like the films' own transitions
+    function fall() {
+      if (reduce || cv.readyState < 2) return;
+      const r = stage.getBoundingClientRect(), D = Math.min(2, devicePixelRatio || 1);
+      const W = cfx.width = Math.round(r.width * D), H = cfx.height = Math.round(r.height * D);
+      const snap = document.createElement('canvas'); snap.width = W; snap.height = H;
+      const sc = snap.getContext('2d');
+      const vw = cv.videoWidth || 3, vh = cv.videoHeight || 4, s = Math.max(W / vw, H / vh);
+      try { sc.drawImage(cv, (W - vw * s) / 2, (H - vh * s) / 2, vw * s, vh * s); } catch (_) { return; }
+      const cw = Math.max(6, Math.round(10 * D)), cols = Math.ceil(W / cw);
+      const col = Array.from({ length: cols }, () => ({ d: Math.random() * .32, g: 2.2 + Math.random() * 1.6 }));
+      const t0 = performance.now();
+      cancelAnimationFrame(fallRaf);
+      const step = now => {
+        const t = (now - t0) / 1000;
+        fx.clearRect(0, 0, W, H);
+        let alive = false;
+        for (let i = 0; i < cols; i++) {
+          const c = col[i], tt = t - c.d;
+          const y = tt > 0 ? .5 * c.g * tt * tt * H : 0;
+          if (y >= H) continue;
+          alive = true;
+          fx.globalAlpha = Math.max(0, 1 - Math.max(0, tt) * 1.1);
+          fx.drawImage(snap, i * cw, 0, cw, H - y, i * cw, y, cw, H - y);
+        }
+        fx.globalAlpha = 1;
+        if (t < .12) { fx.fillStyle = `rgba(150,185,255,${.35 * (1 - t / .12)})`; fx.fillRect(0, 0, W, H); }
+        fallRaf = alive && t < 1.6 ? requestAnimationFrame(step) : (fx.clearRect(0, 0, W, H), 0);
+      };
+      fallRaf = requestAnimationFrame(step);
+    }
+
+    function show(i) {
+      i = (i + VIDS.length) % VIDS.length;
+      if (i === cur) return;
+      const v = VIDS[i];
+      if (cur >= 0) fall();
+      cur = i;
+      stage.classList.add('decoding');
+      cv.poster = `media/tx/${v.id}.jpg`;
+      cv.src = `media/tx/${v.id}.mp4`;
+      $('cNo').textContent = v.no;
+      const ver = $('cVer'); ver.textContent = v.ver; ver.classList.toggle('neon', !!v.neon);
+      $('cCn').textContent = v.cn; $('cLat').textContent = v.lat; $('cMeta').textContent = v.meta; $('cDesc').textContent = v.d;
+      chap.replaceChildren(...v.ch.map(([t, name], k) => {
+        const li = document.createElement('li'), b = document.createElement('button');
+        b.type = 'button'; b.dataset.t = t;
+        b.innerHTML = `<b>${pad(k + 1)}</b><span>${name}</span><em>${fmt(t)}</em>`;
+        b.addEventListener('click', () => { cv.currentTime = t; userPaused = false; cv.play().catch(() => {}); });
+        li.append(b); return li;
+      }));
+      ticks.replaceChildren(...v.ch.slice(1).map(([t]) => { const k = document.createElement('i'); k.style.left = `${t / v.dur * 100}%`; return k; }));
+      cards.forEach((c, k) => { c.setAttribute('aria-current', String(k === i)); c.style.setProperty('--p', '0%'); });
+      const card = cards[i];
+      reel.scrollTo({ left: card.parentElement.offsetLeft - reel.offsetLeft - (reel.clientWidth - card.offsetWidth) / 2, behavior: reduce ? 'auto' : 'smooth' });
+      $('reelCt').textContent = `${pad(i + 1)} / ${pad(VIDS.length)}`;
+      $('cTime').textContent = `00:00 / ${fmt(v.dur)}`;
+      update();
+      if (visible && !userPaused) cv.play().catch(() => {});
+    }
+    const dur = () => (isFinite(cv.duration) && cv.duration > 0 ? cv.duration : VIDS[cur].dur);
+    function update() {
+      const v = VIDS[cur], t = cv.currentTime || 0, d = dur(), p = Math.min(1, t / d);
+      fill.style.width = `${p * 100}%`;
+      seek.setAttribute('aria-valuenow', String(Math.round(p * 100)));
+      $('cTime').textContent = `${fmt(t)} / ${fmt(d)}`;
+      cards[cur].style.setProperty('--p', `${p * 100}%`);
+      const bs = chap.querySelectorAll('button');
+      v.ch.forEach(([a], k) => {
+        const b = v.ch[k + 1] ? v.ch[k + 1][0] : d, on = t >= a && t < b;
+        bs[k].setAttribute('aria-current', String(on));
+        bs[k].style.setProperty('--cp', on ? `${(t - a) / (b - a) * 100}%` : t >= b ? '100%' : '0%');
+      });
+    }
+    const loop = () => { update(); raf = cv.paused ? 0 : requestAnimationFrame(loop); };
+    cv.addEventListener('play', () => { stage.classList.remove('paused'); cPlay.classList.remove('off'); cPlay.setAttribute('aria-label', '暂停'); if (!raf) raf = requestAnimationFrame(loop); });
+    cv.addEventListener('pause', () => { stage.classList.add('paused'); cPlay.classList.add('off'); cPlay.setAttribute('aria-label', '播放'); update(); });
+    cv.addEventListener('loadeddata', () => setTimeout(() => stage.classList.remove('decoding'), reduce ? 0 : 380));
+    cv.addEventListener('ended', () => { if (autoNext) show(cur + 1); else { cv.currentTime = 0; cv.play().catch(() => {}); } });
+    stage.classList.add('paused');
+
+    const toggle = () => { if (cv.paused) { userPaused = false; cv.play().catch(() => {}); } else { userPaused = true; cv.pause(); } };
+    cPlay.addEventListener('click', toggle);
+    $('stBig').addEventListener('click', e => { e.stopPropagation(); userPaused = false; cv.play().catch(() => {}); });
+    cMute.addEventListener('click', () => {
+      cv.muted = !cv.muted;
+      cMute.setAttribute('aria-pressed', String(!cv.muted));
+      cMute.setAttribute('aria-label', cv.muted ? '打开声音' : '静音');
+      if (!cv.muted && cv.paused) { userPaused = false; cv.play().catch(() => {}); }
+    });
+    cAuto.addEventListener('click', () => { autoNext = !autoNext; cAuto.setAttribute('aria-pressed', String(autoNext)); cAuto.textContent = `连播 ${autoNext ? 'ON' : 'OFF'}`; });
+    $('stPrev').addEventListener('click', e => { e.stopPropagation(); show(cur - 1); });
+    $('stNext').addEventListener('click', e => { e.stopPropagation(); show(cur + 1); });
+    cards.forEach(c => c.addEventListener('click', () => { userPaused = false; show(+c.dataset.i); }));
+    $('reelPrev').addEventListener('click', () => reel.scrollBy({ left: -260, behavior: 'smooth' }));
+    $('reelNext').addEventListener('click', () => reel.scrollBy({ left: 260, behavior: 'smooth' }));
+
+    // seek bar: click or drag, arrow keys step 5s
+    const seekTo = x => { const r = seek.getBoundingClientRect(); cv.currentTime = Math.min(.999, Math.max(0, (x - r.left) / r.width)) * dur(); update(); };
+    let seeking = false;
+    seek.addEventListener('pointerdown', e => { seeking = true; try { seek.setPointerCapture(e.pointerId); } catch (_) {} seekTo(e.clientX); });
+    seek.addEventListener('pointermove', e => { if (seeking) seekTo(e.clientX); });
+    seek.addEventListener('pointerup', () => { seeking = false; });
+    seek.addEventListener('keydown', e => {
+      const s = { ArrowLeft: -5, ArrowRight: 5, ArrowDown: -5, ArrowUp: 5 }[e.key];
+      if (s === undefined) return;
+      e.preventDefault(); cv.currentTime = Math.max(0, Math.min(dur() - .1, cv.currentTime + s)); update();
+    });
+
+    // tap the picture to pause; swipe sideways on touch screens to change film
+    let sx = null;
+    stage.addEventListener('pointerdown', e => { sx = e.target.closest('button') ? null : { x: e.clientX, y: e.clientY, touch: e.pointerType !== 'mouse' }; });
+    stage.addEventListener('pointerup', e => {
+      if (!sx) return;
+      const dx = e.clientX - sx.x, dy = e.clientY - sx.y;
+      if (sx.touch && Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(cur + (dx < 0 ? 1 : -1));
+      else if (Math.abs(dx) < 8 && Math.abs(dy) < 8) toggle();
+      sx = null;
+    });
+
+    show(0);
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible && !userPaused) cv.play().catch(() => {});
+      if (!visible && !cv.paused) cv.pause();
+    }, { threshold: .35 }).observe(stage);
+  })();
+
+  /* ── gallery: coverflow light-table with filters, drag, autoplay and a stepping lightbox ── */
+  (() => {
+    const $ = id => document.getElementById(id);
+    const T3 = [['零号城', 'CITY ZERO', '月下的巨构城市，一眼望不到尽头，飞行器在楼群之间穿梭。'],
+      ['街区', 'LOWER DISTRICT', '雨夜长街，招牌连成一片光海，一个撑伞的人走向尽头。'],
+      ['高架', 'TRANSIT', '磁悬浮列车贴着高架掠过，整座城在雨里向后退去。'],
+      ['义体', 'GHOST', '她仰起脸，雨落在皮肤，也落在电路上。'],
+      ['核心', 'CORE TOWER', '从高空俯瞰，城市像一块电路板，光柱从正中升起。'],
+      ['星核', 'STAR CORE', '星核升起在天际线之上，倒影在水面碎成像素。']];
+    const T2 = [['启航', 'DEPARTURE', '环形空间站悬在行星上空，下缘正一点点溶解成像素。'],
+      ['跃迁', 'WARP', '星光被拉成放射的光束，飞船缩成中心的一个点。'],
+      ['虫洞', 'WORMHOLE', '玻璃般的虫洞里，映着宇宙另一侧的旋涡星系。'],
+      ['事件视界', 'EVENT HORIZON', '吸积盘绕过黑洞的顶端，物质沿着视界往下坠落。'],
+      ['坍缩', 'COLLAPSE', '整片星空被吸向中心，坍缩成一个刺眼的光点。'],
+      ['星核', 'STAR CORE', '星核在月相之上燃烧，光环斜斜地切过它。']];
+    const ALL = [
+      ...T3.map(([cn, en, d], i) => ({ set: '003', no: `003·${pad2(i + 1)}`, src: `g003-${i + 1}`, cn, en, d })),
+      ...T2.map(([cn, en, d], i) => ({ set: '002', no: `002·${pad2(i + 1)}`, src: `g002-${i + 1}`, cn, en, d })),
+      { set: '001', no: '001·海报', src: 'g001-poster', cn: '星核', en: 'STAR CORE', d: '网点版画的球体从下缘溶解成像素流，轨道、月相和 HUD 环绕着它。' },
+    ];
+    function pad2(n) { return String(n).padStart(2, '0'); }
+    const stageEl = $('gStage'), track = $('gTrack'), strip = $('gStrip');
+    let list = ALL, cur = 0, off = 0, auto = !reduce, hold = 0, visible = false, elapsed = 0, last = 0, lbOn = false;
+    const DUR = 5200;
+    let cards = [], thumbs = [];
+
+    function build() {
+      track.replaceChildren(); strip.replaceChildren();
+      cards = list.map((g, i) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'g-card'; b.tabIndex = -1;
+        b.setAttribute('aria-label', `${g.no} ${g.cn}`);
+        b.innerHTML = `<img src="media/gallery/${g.src}.jpg" alt="${g.cn}：${g.d}" width="900" height="1350" ${i < 3 ? '' : 'loading="lazy"'} draggable="false"><span class="gc a"></span><span class="gc b"></span><span class="gc c2"></span><span class="gc d"></span>`;
+        b.dataset.i = i;
+        track.append(b);
+        return b;
+      });
+      thumbs = list.map((g, i) => {
+        const li = document.createElement('li'), b = document.createElement('button');
+        b.type = 'button'; b.setAttribute('aria-label', `第 ${i + 1} 张 ${g.cn}`);
+        b.innerHTML = `<img src="media/gallery/thumb/${g.src}.jpg" alt="" width="52" height="78" loading="lazy">`;
+        b.addEventListener('click', () => go(i));
+        li.append(b); strip.append(li); return b;
+      });
+    }
+    const cw = () => (cards[0] ? cards[0].offsetWidth : 300);
+    function layout() {
+      const n = cards.length, w = cw();
+      cards.forEach((c, j) => {
+        let k = j - cur - off;
+        k = ((k % n) + n) % n; if (k > n / 2) k -= n;
+        const a = Math.abs(k), sg = Math.sign(k);
+        const x = sg * (Math.min(a, 1) * w * .66 + Math.max(0, a - 1) * w * .4);
+        const ry = -sg * Math.min(a, 1) * 34, z = -Math.min(a, 3) * 150, sc = 1 - Math.min(a, 3) * .06;
+        c.style.transform = `translate3d(${x}px,0,${z}px) rotateY(${ry}deg) scale(${sc})`;
+        c.style.opacity = a > 2.7 ? 0 : String(1 - Math.max(0, a - 1.6) * .8);
+        c.style.filter = a < .5 ? 'none' : `brightness(${Math.max(.35, 1 - a * .3)}) saturate(.8)`;
+        c.style.zIndex = String(100 - Math.round(a * 10));
+        c.style.pointerEvents = a > 2.4 ? 'none' : 'auto';
+        c.classList.toggle('c', a < .5);
+      });
+    }
+    function caption() {
+      const g = list[cur];
+      $('gNo').textContent = g.no; $('gCn').textContent = g.cn; $('gEn').textContent = g.en; $('gDesc').textContent = g.d;
+      $('gCt').textContent = `${pad2(cur + 1)} / ${pad2(list.length)}`;
+      thumbs.forEach((t, k) => t.setAttribute('aria-current', String(k === cur)));
+      const t = thumbs[cur];
+      if (t) strip.scrollTo({ left: t.parentElement.offsetLeft - strip.clientWidth / 2 + 26, behavior: reduce ? 'auto' : 'smooth' });
+      if (lbOn) lbShow();
+    }
+    function go(i) { cur = ((i % list.length) + list.length) % list.length; off = 0; elapsed = 0; layout(); caption(); }
+
+    document.querySelectorAll('.g-tab').forEach(tab => tab.addEventListener('click', () => {
+      document.querySelectorAll('.g-tab').forEach(t => t.setAttribute('aria-pressed', String(t === tab)));
+      list = tab.dataset.set === 'all' ? ALL : ALL.filter(g => g.set === tab.dataset.set);
+      cur = 0; build(); go(0);
+    }));
+    $('gPrev').addEventListener('click', e => { e.stopPropagation(); go(cur - 1); });
+    $('gNext').addEventListener('click', e => { e.stopPropagation(); go(cur + 1); });
+    const gAuto = $('gAuto');
+    gAuto.setAttribute('aria-pressed', String(auto)); gAuto.textContent = `自动 ${auto ? 'ON' : 'OFF'}`;
+    gAuto.addEventListener('click', () => { auto = !auto; elapsed = 0; gAuto.setAttribute('aria-pressed', String(auto)); gAuto.textContent = `自动 ${auto ? 'ON' : 'OFF'}`; });
+    $('gOpen').addEventListener('click', () => openLb());
+    stageEl.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLb(); }
+    });
+    stageEl.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') hold |= 1; });
+    stageEl.addEventListener('pointerleave', () => { hold &= ~1; });
+    stageEl.addEventListener('focusin', () => { hold |= 2; });
+    stageEl.addEventListener('focusout', () => { hold &= ~2; });
+
+    // drag / swipe: the whole fan follows the pointer, then settles on the nearest card
+    let dg = null;
+    stageEl.addEventListener('pointerdown', e => {
+      if (e.target.closest('.g-arr')) return;
+      dg = { x: e.clientX, y: e.clientY, id: e.pointerId, moved: false, card: e.target.closest('.g-card') };
+    });
+    stageEl.addEventListener('pointermove', e => {
+      if (!dg || e.pointerId !== dg.id) return;
+      const dx = e.clientX - dg.x, dy = e.clientY - dg.y;
+      if (!dg.moved) {
+        if (Math.abs(dx) > 6 && Math.abs(dx) > Math.abs(dy)) { dg.moved = true; stageEl.classList.add('drag'); try { stageEl.setPointerCapture(e.pointerId); } catch (_) {} cards.forEach(c => c.style.transition = 'none'); }
+        else if (Math.abs(dy) > 10) { dg = null; return; } else return;
+      }
+      off = -dx / (cw() * .66); layout();
+    });
+    const endDrag = () => {
+      if (!dg) return;
+      cards.forEach(c => c.style.transition = '');
+      stageEl.classList.remove('drag');
+      if (dg.moved) go(cur + Math.round(off) || cur + Math.sign(off) * (Math.abs(off) > .15 ? 1 : 0));
+      else if (dg.card) { const j = +dg.card.dataset.i; if (j === cur) openLb(); else go(j); }
+      dg = null;
+    };
+    stageEl.addEventListener('pointerup', endDrag);
+    stageEl.addEventListener('pointercancel', () => { if (dg) { off = 0; layout(); cards.forEach(c => c.style.transition = ''); stageEl.classList.remove('drag'); dg = null; } });
+
+    // lightbox with previous / next
+    const lbPrev = $('lbPrev'), lbNext = $('lbNext');
+    function lbShow() {
+      const g = list[cur], im = document.createElement('img');
+      im.src = `media/gallery/${g.src}.jpg`; im.alt = `${g.cn}：${g.d}`;
+      lbMedia.replaceChildren(im);
+      lbTitle.textContent = `TX.${g.no} · ${g.cn} ${g.en}`;
+    }
+    function openLb() { lbOn = true; lbShow(); lbPrev.hidden = lbNext.hidden = false; if (!lb.open) lb.showModal(); }
+    lbPrev.addEventListener('click', () => go(cur - 1));
+    lbNext.addEventListener('click', () => go(cur + 1));
+    lb.addEventListener('keydown', e => { if (!lbOn) return; if (e.key === 'ArrowLeft') go(cur - 1); else if (e.key === 'ArrowRight') go(cur + 1); });
+    lb.addEventListener('close', () => { lbOn = false; lbPrev.hidden = lbNext.hidden = true; });
+
+    // autoplay with a progress line; holds while hovered, focused, dragged, off screen or in the lightbox
+    const prog = $('gProg');
+    function tick(now) {
+      const dt = last ? now - last : 0; last = now;
+      if (auto && !hold && !dg && visible && !lbOn && !document.hidden) {
+        elapsed += dt;
+        if (elapsed >= DUR) go(cur + 1);
+      }
+      prog.style.width = auto ? `${Math.min(1, elapsed / DUR) * 100}%` : '0%';
+      requestAnimationFrame(tick);
+    }
+    build(); go(0);
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }, { threshold: .3 }).observe(stageEl);
+    requestAnimationFrame(tick);
+    let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(layout, 120); });
   })();
 })();
 </script>
