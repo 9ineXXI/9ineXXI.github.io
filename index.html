@@ -688,7 +688,7 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
         </div>
       </div>
       <div class="reel-wrap">
-        <div class="reel-h"><span>放映单 · PLAYLIST</span><span class="reel-ct" id="reelCt">01 / 05</span></div>
+        <div class="reel-h"><span>放映单 · PLAYLIST</span><span class="reel-ct" id="reelCt">01 / 07</span></div>
         <div class="reel-row">
           <button class="rarr" id="reelPrev" type="button" aria-label="向左滚动放映单">‹</button>
           <ol class="reel" id="reel"></ol>
@@ -712,7 +712,9 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
     </div>
     <div class="gal r" id="gal">
       <div class="g-tabs" role="group" aria-label="筛选画廊">
-        <button class="g-tab" type="button" data-set="all" aria-pressed="true">全部 <em>13</em></button>
+        <button class="g-tab" type="button" data-set="all" aria-pressed="true">全部 <em>19</em></button>
+        <button class="g-tab" type="button" data-set="005" aria-pressed="false">TX.005 孤锋 <em>4</em></button>
+        <button class="g-tab" type="button" data-set="004" aria-pressed="false">TX.004 幽灵接线 <em>2</em></button>
         <button class="g-tab" type="button" data-set="003" aria-pressed="false">TX.003 零号城 <em>6</em></button>
         <button class="g-tab" type="button" data-set="002" aria-pressed="false">TX.002 深空日志 <em>6</em></button>
         <button class="g-tab" type="button" data-set="001" aria-pressed="false">TX.001 星核 <em>1</em></button>
@@ -1442,6 +1444,12 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
   (() => {
     const $ = id => document.getElementById(id);
     const VIDS = [
+      { id: 't005', no: '005', cn: '孤锋', lat: 'LONE EDGE', ver: '动态海报合集', dur: 31, meta: '31S · 2:3 · 四张海报 · 配乐',
+        d: '一个没有名字的刀客，走完了四场雨夜。刀光劈开画面，像素整列坠落，最后他走上长阶，走进了星的核心。',
+        ch: [[0, '夜雨'], [7, '刃弧'], [14, '无相'], [21, '归墟'], [28, '片尾']] },
+      { id: 't004', no: '004', cn: '幽灵接线', lat: 'GHOST WIRE', ver: '代码彩色版', dur: 24, meta: '24S · 2:3 · 代码字符 · 配乐',
+        d: '线缆插进太阳穴，数据顺着线流进她的意识。画面由代码字符实时拼成，只有扫描光带扫过的地方，才露出她原本的样子。',
+        ch: [[0, '接入'], [8, '入侵'], [16, '覆写']] },
       { id: 't003', no: '003', cn: '零号城', lat: 'CITY ZERO', ver: '代码字符版', dur: 35, meta: '35S · 3:4 · 代码字符 · 配乐',
         d: '一座雨夜里永不入睡的巨构城市。每一帧由约 22,000 个代码字符实时拼成：窗户明灭，水洼泛起涟漪，列车拖出速度线。',
         ch: [[0, '零号城'], [6.5, '街区'], [12.5, '高架'], [18.5, '义体'], [24.5, '核心'], [29, '星核']] },
@@ -1615,7 +1623,12 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
       ['事件视界', 'EVENT HORIZON', '吸积盘绕过黑洞的顶端，物质沿着视界往下坠落。'],
       ['坍缩', 'COLLAPSE', '整片星空被吸向中心，坍缩成一个刺眼的光点。'],
       ['星核', 'STAR CORE', '星核在月相之上燃烧，光环斜斜地切过它。']];
+    const T5 = [['夜雨', 'NIGHT RAIN', '雨落千檐，一人独立。'], ['刃弧', 'CRESCENT', '刀过处，雨停了一瞬。'],
+      ['无相', 'FACELESS', '面具碎了，他依旧没有脸。'], ['归墟', 'RETURN TO THE CORE', '每一级台阶，都通往星的核心。']];
     const ALL = [
+      ...T5.map(([cn, en, d], i) => ({ set: '005', no: `005·${pad2(i + 1)}`, src: `g005-${i + 1}`, cn, en, d })),
+      { set: '004', no: '004·01', src: 'g004-2', cn: '幽灵接线', en: 'GHOST WIRE', d: '线缆接进意识，四周的屏幕里全是她自己的脸。' },
+      { set: '004', no: '004·02', src: 'g004-1', cn: '幽灵接线 · 钴蓝', en: 'GHOST WIRE · COBALT', d: '同一张图的星核钴蓝版：网点、线稿和像素溶解。' },
       ...T3.map(([cn, en, d], i) => ({ set: '003', no: `003·${pad2(i + 1)}`, src: `g003-${i + 1}`, cn, en, d })),
       ...T2.map(([cn, en, d], i) => ({ set: '002', no: `002·${pad2(i + 1)}`, src: `g002-${i + 1}`, cn, en, d })),
       { set: '001', no: '001·海报', src: 'g001-poster', cn: '星核', en: 'STAR CORE', d: '网点版画的球体从下缘溶解成像素流，轨道、月相和 HUD 环绕着它。' },
