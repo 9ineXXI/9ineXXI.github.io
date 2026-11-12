@@ -469,6 +469,23 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
   .tb-frame { height: 86vh; min-height: 560px; border-radius: 12px; }
 }
 
+
+/* hero: new-tool callout + primary tool button */
+.newtool { display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: auto auto; gap: 2px 14px; align-items: center; max-width: 470px; margin: 4px 0 18px; padding: 12px 16px; text-decoration: none; color: var(--ink);
+  border: 1px solid var(--glow); background: linear-gradient(90deg, rgba(31, 60, 255, .26), rgba(31, 60, 255, .06)); box-shadow: 0 0 24px rgba(31, 60, 255, .35), inset 0 0 18px rgba(80, 130, 255, .12); transition: box-shadow .25s, transform .25s, background .25s; }
+.newtool:hover { transform: translateY(-2px); box-shadow: 0 0 36px rgba(31, 60, 255, .65), inset 0 0 18px rgba(80, 130, 255, .2); background: linear-gradient(90deg, rgba(31, 60, 255, .38), rgba(31, 60, 255, .1)); }
+.nt-tag { grid-row: 1 / 3; display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px 4px; font-family: var(--f-mono); font-size: 11px; letter-spacing: .2em; color: #04081a; background: var(--ink); }
+.nt-tag i { width: 6px; height: 6px; border-radius: 50%; background: #2f5bff; box-shadow: 0 0 6px #2f5bff; animation: blink 1.1s steps(2, jump-none) infinite; }
+.nt-t { font-size: 15px; letter-spacing: .12em; }
+.nt-t b { font-family: var(--f-cn-display); font-weight: 600; font-size: 17px; margin-right: 8px; text-shadow: 0 0 14px rgba(31, 60, 255, .9); }
+.nt-d { grid-column: 2; font-size: 12.5px; letter-spacing: .06em; color: var(--mist); }
+.nt-go { grid-row: 1 / 3; grid-column: 3; font: 400 22px/1 var(--f-mono); color: var(--glow); transition: transform .25s; }
+.newtool:hover .nt-go { transform: translateX(4px); }
+.ch .chip-new { border-color: var(--glow); color: var(--ink); box-shadow: 0 0 12px rgba(31, 60, 255, .45); }
+.vopen.is-tool { color: #04081a; background: var(--ink); border-color: var(--ink); box-shadow: 0 0 20px rgba(31, 60, 255, .6); }
+.tool-cta .dot { width: 7px; height: 7px; border-radius: 50%; background: #2f5bff; box-shadow: 0 0 0 0 rgba(47, 91, 255, .7); animation: ping 2s ease-out infinite; }
+@media (max-width: 520px) { .newtool { gap: 2px 10px; padding: 10px 12px; } .nt-d { font-size: 12px; } }
+
 @media (max-width: 1000px) {
   .chans { grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(100%, 620px); }
 }
@@ -568,8 +585,15 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
       <h1 class="title" aria-label="星核 STAR CORE"><span class="cn">星核</span><span class="en" aria-hidden="true">STAR<br>CORE</span></h1>
       <p class="typed" id="typed" aria-hidden="true"></p>
       <p class="lede">收集被黑夜吞没的光，把它们做成一颗星。画面由 AI 生成，动效由代码一帧一帧算出来。拖动画面上的分界线，看代码怎样重写一幅画。</p>
+      <a class="newtool" href="#tool">
+        <span class="nt-tag"><i aria-hidden="true"></i>NEW</span>
+        <span class="nt-t"><b>发光像素图</b>小工具上线</span>
+        <span class="nt-d">把你的照片变成一束星光 · 打开就能用 · 不上传</span>
+        <span class="nt-go" aria-hidden="true">→</span>
+      </a>
       <div class="cta">
-        <a class="btn fill" href="#works">看全部作品 <span class="ar" aria-hidden="true">→</span></a>
+        <a class="btn fill tool-cta" href="#tool"><span class="dot" aria-hidden="true"></span>试试小工具 <span class="ar" aria-hidden="true">→</span></a>
+        <a class="btn" href="#works">看全部作品 <span class="ar" aria-hidden="true">→</span></a>
         <a class="btn" href="#channels">关注星核 <span class="ar" aria-hidden="true">↗</span></a>
       </div>
     </div>
@@ -588,7 +612,8 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
       <button class="chip" type="button" data-i="2" aria-pressed="false" title="No.003">深海信号</button>
       <button class="chip" type="button" data-i="3" aria-pressed="false" title="No.004">蜕变</button>
       <button class="chip" type="button" data-i="4" aria-pressed="false" title="No.005">全知</button>
-      <button class="chip" type="button" data-i="5" aria-pressed="true" title="No.006">守星人</button>
+      <button class="chip" type="button" data-i="5" aria-pressed="false" title="No.006">守星人</button>
+      <button class="chip chip-new" type="button" data-i="6" aria-pressed="true" title="小工具">✦ 发光像素图</button>
     </div>
   </div>
 </section>
@@ -987,6 +1012,7 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
     { n: '004', cn: '蜕变', src: 'media/metamorphosis.jpg', line: '数据长出了翅膀', fx: .5, fy: .47, star: [.501, .393] },
     { n: '005', cn: '全知', src: 'media/omniscient.jpg', line: '它看得见一切', fx: .5, fy: .5, star: [.504, .447] },
     { n: '006', cn: '守星人', src: 'media/keeper.jpg', line: '脸上只有一颗星', fx: .5, fy: .5, star: [.501, .389] },
+    { n: 'NEW', cn: '发光像素图', src: 'media/tool-cover.jpg', line: '照片秒变一束星光', fx: .5, fy: .5, star: [.5, .42], tool: true },
   ];
   const viewer = document.getElementById('viewer'), view = document.getElementById('view'), vx = view.getContext('2d');
   const knob = document.getElementById('knob'), vNo = document.getElementById('vNo'), vGrid = document.getElementById('vGrid'), vOpen = document.getElementById('vOpen');
@@ -1176,11 +1202,18 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
     want = i;
     const w = WORKS[i];
     chips.forEach(c => c.setAttribute('aria-pressed', String(+c.dataset.i === i)));
-    vNo.textContent = `No.${w.n} · ${w.cn}`;
-    vOpen.textContent = w.video ? '▶ 播放 · 13S' : '↗ 大图';
-    vOpen.setAttribute('aria-label', `${w.video ? '播放' : '查看'} No.${w.n} ${w.cn}`);
+    vNo.textContent = w.tool ? `NEW · 小工具 · ${w.cn}` : `No.${w.n} · ${w.cn}`;
+    vOpen.textContent = w.tool ? '✦ 试试小工具' : w.video ? '▶ 播放 · 13S' : '↗ 大图';
+    vOpen.classList.toggle('is-tool', !!w.tool);
+    vOpen.setAttribute('aria-label', w.tool ? '去试试发光像素图小工具' : `${w.video ? '播放' : '查看'} No.${w.n} ${w.cn}`);
     typeLine(w.line, w.ember);
     load(w).then(ok => {
+      if (!ok && w.tool) {                     // cover not uploaded yet: hide the slide and fall back
+        const k = WORKS.indexOf(w); WORKS.splice(k, 1);
+        const c = chips.find(c => +c.dataset.i === k); if (c) { c.remove(); chips.splice(chips.indexOf(c), 1); }
+        if (want === i) select(WORKS.length - 1, false);
+        return;
+      }
       if (!ok || want !== i) return;
       WORKS.forEach((o, k) => { if (k !== i && k !== cur) o.code = null; });
       if (!w.code) build(w);
@@ -1222,7 +1255,7 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
     if (step === undefined) return;
     e.preventDefault(); auto = false; setSplit(split + step);
   });
-  vOpen.addEventListener('click', () => { const w = WORKS[cur >= 0 ? cur : want]; if (w) openShot(shotBy(w.n)); });
+  vOpen.addEventListener('click', () => { const w = WORKS[cur >= 0 ? cur : want]; if (!w) return; if (w.tool) document.getElementById('tool').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); else openShot(shotBy(w.n)); });
   chips.forEach(c => c.addEventListener('click', () => select(+c.dataset.i, true)));
 
   function vLoop() {
@@ -1235,7 +1268,7 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
     vraf = vVisible ? requestAnimationFrame(vLoop) : 0;
   }
   vSize();
-  select(5, false);
+  select(6, false);
   if (!reduce) new IntersectionObserver(([e]) => {
     vVisible = e.isIntersecting;
     if (vVisible && !vraf) { nextAuto = Math.max(nextAuto, now() + 3); vraf = requestAnimationFrame(vLoop); }
