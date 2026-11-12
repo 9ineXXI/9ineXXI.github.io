@@ -482,6 +482,7 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
 .nt-go { grid-row: 1 / 3; grid-column: 3; font: 400 22px/1 var(--f-mono); color: var(--glow); transition: transform .25s; }
 .newtool:hover .nt-go { transform: translateX(4px); }
 .ch .chip-new { border-color: var(--glow); color: var(--ink); box-shadow: 0 0 12px rgba(31, 60, 255, .45); }
+.ch .chip-new[aria-pressed="true"] { color: #04081a; }
 .vopen.is-tool { color: #04081a; background: var(--ink); border-color: var(--ink); box-shadow: 0 0 20px rgba(31, 60, 255, .6); }
 .tool-cta .dot { width: 7px; height: 7px; border-radius: 50%; background: #2f5bff; box-shadow: 0 0 0 0 rgba(47, 91, 255, .7); animation: ping 2s ease-out infinite; }
 @media (max-width: 520px) { .newtool { gap: 2px 10px; padding: 10px 12px; } .nt-d { font-size: 12px; } }
@@ -1012,7 +1013,7 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
     { n: '004', cn: '蜕变', src: 'media/metamorphosis.jpg', line: '数据长出了翅膀', fx: .5, fy: .47, star: [.501, .393] },
     { n: '005', cn: '全知', src: 'media/omniscient.jpg', line: '它看得见一切', fx: .5, fy: .5, star: [.504, .447] },
     { n: '006', cn: '守星人', src: 'media/keeper.jpg', line: '脸上只有一颗星', fx: .5, fy: .5, star: [.501, .389] },
-    { n: 'NEW', cn: '发光像素图', src: 'media/tool-cover.jpg', line: '照片秒变一束星光', fx: .5, fy: .5, star: [.5, .42], tool: true },
+    { n: 'NEW', cn: '发光像素图', src: 'media/tool-cover.jpg', line: '随手拍也能变赛博灯牌', fx: .5, fy: .5, star: [.07, .3], tool: true },
   ];
   const viewer = document.getElementById('viewer'), view = document.getElementById('view'), vx = view.getContext('2d');
   const knob = document.getElementById('knob'), vNo = document.getElementById('vNo'), vGrid = document.getElementById('vGrid'), vOpen = document.getElementById('vOpen');
@@ -1207,6 +1208,8 @@ dialog.lb::backdrop { background: rgba(2, 3, 8, .88); }
     vOpen.classList.toggle('is-tool', !!w.tool);
     vOpen.setAttribute('aria-label', w.tool ? '去试试发光像素图小工具' : `${w.video ? '播放' : '查看'} No.${w.n} ${w.cn}`);
     typeLine(w.line, w.ember);
+    if (!user && w.tool) setSplit(.13);                    // keep the cover's headline readable on the original side
+    else if (!user && Math.abs(split - .13) < .001) setSplit(.62);
     load(w).then(ok => {
       if (!ok && w.tool) {                     // cover not uploaded yet: hide the slide and fall back
         const k = WORKS.indexOf(w); WORKS.splice(k, 1);
