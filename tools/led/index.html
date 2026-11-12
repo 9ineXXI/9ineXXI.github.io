@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>发光像素图</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="app">
+<header class="bar">
+  <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+  <b class="title">发光像素图</b>
+  <span class="meta">照片不上传</span>
+  <span class="badge">STAR CORE</span>
+</header>
+
+<section class="stage" id="stage" aria-label="预览">
+  <div class="frame" id="frame">
+    <canvas id="orig" aria-hidden="true"></canvas>
+    <canvas id="led" role="img" aria-label="发光像素效果预览，右侧为原图"></canvas>
+    <span class="vlab l">效果</span><span class="vlab r">原图</span>
+    <span class="seam" id="seam" aria-hidden="true"></span>
+    <button class="knob" id="knob" type="button" role="slider" aria-label="对比分界线" aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
+      <svg viewBox="0 0 14 9" fill="none" stroke="currentColor"><path d="M4 .5 .5 4.5 4 8.5M10 .5l3.5 4L10 8.5"/></svg>
+    </button>
+    <button class="try" id="tryBtn" type="button"><span class="plus" aria-hidden="true">+</span>选一张你的照片试试</button>
+    <span class="busy" id="busy" hidden>RENDER…</span>
+  </div>
+  <div class="info"><span id="srcName">示例图</span><span id="gridInfo">像素 —</span></div>
+</section>
+
+<section class="controls" aria-label="参数">
+  <div class="tabs" role="tablist" aria-label="参数分类">
+    <button class="tab" type="button" role="tab" id="tab-grid" aria-controls="p-grid" aria-selected="true"><i class="led" aria-hidden="true"></i>像素</button>
+    <button class="tab" type="button" role="tab" id="tab-color" aria-controls="p-color" aria-selected="false"><i class="led" aria-hidden="true"></i>颜色</button>
+    <button class="tab" type="button" role="tab" id="tab-deco" aria-controls="p-deco" aria-selected="false"><i class="led" aria-hidden="true"></i>装饰</button>
+    <button class="tab" type="button" role="tab" id="tab-size" aria-controls="p-size" aria-selected="false"><i class="led" aria-hidden="true"></i>尺寸</button>
+  </div>
+  <div class="panels">
+    <div class="panel" role="tabpanel" id="p-grid" aria-labelledby="tab-grid">
+      <div class="ph"><span class="n">01</span>像素<em>GRID</em></div>
+      <div class="ctl"><div class="lab"><label for="cols">像素密度</label><output id="o_cols"></output></div><input type="range" id="cols" min="48" max="240" step="1"></div>
+      <div class="ctl"><div class="lab"><label for="dot">像素点大小</label><output id="o_dot"></output></div><input type="range" id="dot" min="35" max="100" step="1"></div>
+      <div class="row2"><span class="lab2">像素点形状</span>
+        <div class="chips" role="group" aria-label="像素点形状">
+          <button class="chip" type="button" data-k="shape" data-v="round">圆点</button>
+          <button class="chip" type="button" data-k="shape" data-v="square">方块</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel" role="tabpanel" id="p-color" aria-labelledby="tab-color" hidden>
+      <div class="ph"><span class="n">02</span>颜色<em>TINT</em></div>
+      <div class="chips five" role="group" aria-label="光的颜色">
+        <button class="chip" type="button" data-k="tint" data-v="#2f5bff"><span class="sw" style="background:#2f5bff"></span>蓝光</button>
+        <button class="chip" type="button" data-k="tint" data-v="#ff7a26"><span class="sw" style="background:#ff7a26"></span>橙光</button>
+        <button class="chip" type="button" data-k="tint" data-v="#16b8c8"><span class="sw" style="background:#16b8c8"></span>青光</button>
+        <button class="chip" type="button" data-k="tint" data-v="#a35cff"><span class="sw" style="background:#a35cff"></span>紫光</button>
+        <button class="chip" type="button" data-k="tint" data-v="none"><span class="sw" style="background:linear-gradient(135deg,#f55,#5f5,#55f)"></span>原色</button>
+      </div>
+      <div class="ctl"><div class="lab"><label for="tintAmt">颜色浓度</label><output id="o_tintAmt"></output></div><input type="range" id="tintAmt" min="0" max="100" step="1"></div>
+      <div class="ctl"><div class="lab"><label for="punch">亮暗对比</label><output id="o_punch"></output></div><input type="range" id="punch" min="0" max="100" step="1"></div>
+      <div class="ctl"><div class="lab"><label for="bloom">发光强度</label><output id="o_bloom"></output></div><input type="range" id="bloom" min="0" max="100" step="1"></div>
+    </div>
+    <div class="panel" role="tabpanel" id="p-deco" aria-labelledby="tab-deco" hidden>
+      <div class="ph"><span class="n">03</span>装饰<em>OVERLAY</em></div>
+      <label class="tog">闪光星星（点画面放置）<input type="checkbox" id="star"></label>
+      <label class="tog">圆环装饰<input type="checkbox" id="hud"></label>
+      <label class="tog">像素拖尾<input type="checkbox" id="drip"></label>
+      <label class="tog">扫描线<input type="checkbox" id="scan"></label>
+      <label class="tog">角落署名<input type="checkbox" id="sig"></label>
+      <input class="txt" id="sigText" type="text" maxlength="40" aria-label="署名文字">
+    </div>
+    <div class="panel" role="tabpanel" id="p-size" aria-labelledby="tab-size" hidden>
+      <div class="ph"><span class="n">04</span>尺寸<em>OUTPUT</em></div>
+      <div class="row2"><span class="lab2">画幅</span>
+        <div class="chips" role="group" aria-label="画幅">
+          <button class="chip" type="button" data-k="ratio" data-v="0">原比例</button>
+          <button class="chip" type="button" data-k="ratio" data-v="0.75">3:4</button>
+          <button class="chip" type="button" data-k="ratio" data-v="1">1:1</button>
+          <button class="chip" type="button" data-k="ratio" data-v="0.5625">9:16</button>
+          <button class="chip" type="button" data-k="ratio" data-v="1.7778">16:9</button>
+        </div>
+      </div>
+      <div class="row2"><span class="lab2">导出尺寸</span>
+        <div class="chips" role="group" aria-label="导出尺寸（长边像素）">
+          <button class="chip" type="button" data-k="size" data-v="1080">1080</button>
+          <button class="chip" type="button" data-k="size" data-v="1440">1440</button>
+          <button class="chip" type="button" data-k="size" data-v="2048">2048</button>
+        </div>
+      </div>
+      <p class="note">尺寸是长边像素。3:4 + 1440 正好是小红书竖图。</p>
+      <button class="link" id="resetBtn" type="button">恢复默认参数</button>
+    </div>
+  </div>
+</section>
+
+<footer class="actions">
+  <button class="btn photo" id="pickBtn" type="button"><span class="plus" aria-hidden="true">+</span><span id="pickLabel">添加照片</span></button>
+  <button class="btn fill" id="saveBtn" type="button"><span class="ar" aria-hidden="true">↓</span>保存到相册</button>
+  <input type="file" id="file" accept="image/*" hidden>
+</footer>
+</div>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="in">
+    <img id="sheetImg" alt="导出的发光像素图">
+    <p id="sheetMsg">右键图片另存为。</p>
+    <button class="btn" id="sheetClose" type="button">关闭</button>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<script src="./app.js"></script>
+</body>
+</html>
